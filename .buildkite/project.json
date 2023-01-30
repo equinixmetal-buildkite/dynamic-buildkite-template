@@ -1,0 +1,10 @@
+{
+  "name": "Dynamic Pipeline Config",
+  "steps": [
+    {
+      "type": "script",
+      "name": ":pipeline:",
+      "command": ".buildkite/common-pipeline.sh | buildkite-agent pipeline upload"
+    }
+  ]
+}
