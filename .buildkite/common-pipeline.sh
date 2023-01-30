@@ -4,7 +4,6 @@ set -eu
 
 trivy_plugin="v1.18.0"
 shell_plugin="v1.3.0"
-docker_build_plugin="v5.3.0"
 
 echo "steps:"
 
