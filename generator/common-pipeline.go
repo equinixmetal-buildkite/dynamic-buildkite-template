@@ -23,7 +23,7 @@ steps:
 
 	trivyStep := fmt.Sprintf(trivyStepFormat, trivyPlugin, shellPlugin)
 	if _, err := w.Write([]byte(trivyStep)); err != nil {
-		return fmt.Errorf("error writing trivy step to the output stream: %W", err)
+		return fmt.Errorf("error writing trivy step to the output stream: %w", err)
 	}
 	return nil
 }
