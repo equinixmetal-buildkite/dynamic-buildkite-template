@@ -1,8 +1,11 @@
-package buildkite
+package generator
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+)
 
-func TrivyStepGenerator(trivyPlugin, shellPlugin string) {
+func GenerateTrivyStep(trivyPlugin, shellPlugin string, w io.Writer) error {
 	trivyStepFormat := `
 steps:
 - command: ls
@@ -15,5 +18,6 @@ steps:
 `
 
 	trivyStep := fmt.Sprintf(trivyStepFormat, trivyPlugin, shellPlugin)
-	fmt.Println(trivyStep)
+	_, err := w.Write([]byte(trivyStep))
+	return fmt.Errorf("error writing trivy step to the output stream: %W", err)
 }
