@@ -5,6 +5,10 @@ import (
 	"io"
 )
 
+// GenerateTrivyStep takes trivy plugin version and shell plugin version
+// and an io.Writer to generate trivy step configuration. The trivy step is
+// written to the provided io.Writer.
+// It returns error in case write to the io.Writer errors out.
 func GenerateTrivyStep(trivyPlugin, shellPlugin string, w io.Writer) error {
 	trivyStepFormat := `
 steps:
@@ -18,6 +22,8 @@ steps:
 `
 
 	trivyStep := fmt.Sprintf(trivyStepFormat, trivyPlugin, shellPlugin)
-	_, err := w.Write([]byte(trivyStep))
-	return fmt.Errorf("error writing trivy step to the output stream: %W", err)
+	if _, err := w.Write([]byte(trivyStep)); err != nil {
+		return fmt.Errorf("error writing trivy step to the output stream: %W", err)
+	}
+	return nil
 }
