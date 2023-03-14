@@ -1,0 +1,16 @@
+name: "dynamic-buildkite-template"
+arch: "amd64"
+platform: "linux"
+version: "v1.0.0"
+# section: "default"
+# priority: "extra"
+maintainer: "Equinix Metal"
+description: |
+  dynamic-buildkite-template: This Program generates trivy step for the provided options
+vendor: "Equinix Metal"
+homepage: "https://deploy.equinix.com/"
+license: "apache"
+# changelog: "changelog.yaml"
+contents:
+- src: ./dynamic-buildkite-template
+  dst: /usr/bin/dynamic-buildkite-template
