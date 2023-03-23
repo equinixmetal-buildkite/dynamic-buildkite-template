@@ -94,7 +94,6 @@ linters-settings:
     sections:
       - standard
       - default
-      - prefix(github.com/equinixmetal/audito-maldito)
   errcheck:
     check-type-assertions: true
     check-blank: true
