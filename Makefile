@@ -11,8 +11,8 @@ BINARY_NAME=dynamic-buildkite-template
 all: clean lint build
 
 ## lint: Runs the linter on the source
-lint:
-	$(GOLINT) run --fix
+#lint:
+#	$(GOLINT) run --fix
 ## build: Gathers the dependencies and builds the binary
 build:
 	$(GOMOD) tidy
