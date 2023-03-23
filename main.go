@@ -1,11 +1,12 @@
 package main
 
 import (
-	"dynamic-buildkite-template/generator"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+
+	"dynamic-buildkite-template/generator"
 )
 
 func main() {
