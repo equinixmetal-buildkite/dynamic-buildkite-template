@@ -7,6 +7,6 @@ LABEL authors="Equinix Metal"
 ENV CGO_ENABLED=0
 WORKDIR /go/src/workspace/dynamic-buildkite-template
 COPY . .
-RUN make all
+RUN make build
 
 ENTRYPOINT [ "./dynamic-buildkite-template" ]
