@@ -1,16 +1,15 @@
 package main
 
 import (
+	"dynamic-buildkite-template/generator"
 	"flag"
 	"fmt"
 	"log"
 	"os"
-
-	"dynamic-buildkite-template/generator"
 )
 
 func main() {
-	trivyPlugin := flag.String("trivyPlugin", "v1.18.0", "provide trivy plugin version")
+	trivyPlugin := flag.String("trivyPlugin", "v1.18.1", "provide trivy plugin version")
 	shellPlugin := flag.String("shellPlugin", "v1.3.0", "provide shell plugin version")
 
 	flag.Usage = func() {
