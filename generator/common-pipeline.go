@@ -15,6 +15,10 @@ steps:
 - command: ls
   plugins:
     - equinixmetal-buildkite/trivy#%s
+	    severity: CRITICAL,HIGH
+	    ignore-unfixed: true
+	    security-checks: config,secret,vuln
+	    skip-files: 'cosign.key'
 - label: ":sparkles: SHELL CHECK"
   plugins:
     - shellcheck#%s:
