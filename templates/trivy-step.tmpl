@@ -1,0 +1,12 @@
+steps:
+- command: ls
+  plugins:
+    - equinixmetal-buildkite/trivy#{{ .TrivyPlugin }}
+	    severity: {{ .Severity }}
+	    ignore-unfixed: {{ .IgnoreUnfixed }}
+	    security-checks: {{ join .SecurityChecks }}
+	    skip-files: '{{ .SkipFiles }}'
+- label: ":sparkles: SHELL CHECK"
+  plugins:
+    - shellcheck#{{ .ShellPlugin }}:
+        files: script.sh
