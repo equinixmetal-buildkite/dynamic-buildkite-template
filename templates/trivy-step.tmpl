@@ -2,7 +2,7 @@ steps:
 - command: ls
   plugins:
     - equinixmetal-buildkite/trivy#{{ .TrivyPlugin }}
-        severity: {{ .Severity }}
+        severity: {{ join .Severity }}
         ignore-unfixed: {{ .IgnoreUnfixed }}
         security-checks: {{ join .SecurityChecks }}
         skip-files: '{{ .SkipFiles }}'
