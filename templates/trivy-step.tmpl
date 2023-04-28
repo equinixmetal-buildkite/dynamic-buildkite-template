@@ -1,7 +1,7 @@
 steps:
 - command: ls
   plugins:
-    - equinixmetal-buildkite/trivy#{{ .TrivyPlugin }}
+    - equinixmetal-buildkite/trivy#{{ .TrivyPlugin }}:
         severity: {{ join .Severity }}
         ignore-unfixed: {{ .IgnoreUnfixed }}
         security-checks: {{ join .SecurityChecks }}
