@@ -33,7 +33,17 @@ Options:
 
 	flag.Parse()
 
-	err := generator.GenerateTrivyStep(*trivyPlugin, *shellPlugin, severity, *ignoreUnfixed, securityChecks, *skipFiles, *shellCheckFiles, os.Stdout)
+	var g = generator.Generator{
+		TrivyPlugin:     *trivyPlugin,
+		ShellPlugin:     *shellPlugin,
+		Severity:        severity,
+		IgnoreUnfixed:   *ignoreUnfixed,
+		SecurityChecks:  securityChecks,
+		SkipFiles:       *skipFiles,
+		ShellCheckFiles: *shellCheckFiles,
+	}
+
+	err := generator.GenerateTrivyStep(g, os.Stdout)
 	if err != nil {
 		log.Fatal(err)
 	}
