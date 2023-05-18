@@ -1,14 +1,16 @@
 steps:
-- command: ls
-  plugins:
-    - equinixmetal-buildkite/trivy#{{ .TrivyPlugin }}
-	    severity: {{ join .Severity }}
-	    ignore-unfixed: {{ .IgnoreUnfixed }}
-	    security-checks: {{ join .SecurityChecks }}
-	    skip-files: '{{ .SkipFiles }}'
+  - command: ls
+    plugins:
+{{if .TrivyPlugin }}
+      - equinixmetal-buildkite/trivy#{{ .TrivyPlugin }}:
+          severity: {{ join .Severity }}
+          ignore-unfixed: {{ .IgnoreUnfixed }}
+          security-checks: {{ join .SecurityChecks }}
+          skip-files: '{{ .SkipFiles }}'
+{{end}}
 {{if .ShellPlugin }}
-- label: ":sparkles: SHELL CHECK"
-  plugins:
-    - shellcheck#{{ .ShellPlugin }}:
-        files: {{ .ShellCheckFiles }}
+ - label: ":sparkles: SHELL CHECK"
+   plugins:
+   - shellcheck#{{ .ShellPlugin }}:
+       files: {{ .ShellCheckFiles }}
 {{end}}

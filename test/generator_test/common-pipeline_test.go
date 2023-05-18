@@ -22,7 +22,23 @@ func Test_GenerateSuccess(t *testing.T) {
 	var sb strings.Builder
 	generator.GenerateTrivyStep(g, &sb, "../../templates/*")
 
-	expected := "steps:\n- command: ls\n  plugins:\n    - equinixmetal-buildkite/trivy#v1.18.2\n\t    severity: CRITICAL,HIGH\n\t    ignore-unfixed: true\n\t    security-checks: config,secret,vuln\n\t    skip-files: 'cosign.key'\n\n- label: \":sparkles: SHELL CHECK\"\n  plugins:\n    - shellcheck#v1.2.5:\n        files: script.sh"
+	expected := `
+ steps:
+  - command: ls
+    plugins:
+
+      - equinixmetal-buildkite/trivy#v1.18.2:
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          security-checks: config,secret,vuln
+          skip-files: 'cosign.key'
+
+
+ - label: ":sparkles: SHELL CHECK"
+   plugins:
+   - shellcheck#v1.2.5:
+       files: script.sh
+`
 	require.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(sb.String()), "Generated template does not match")
 }
 

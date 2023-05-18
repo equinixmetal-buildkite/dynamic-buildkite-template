@@ -8,8 +8,7 @@ import (
 )
 
 func init() {
-	// cobra.OnInitialize()
-	generateCmd.PersistentFlags().String("trivyPlugin", "v1.18.2", "provide trivy plugin version")
+	generateCmd.PersistentFlags().String("trivyPlugin", "", "provide trivy plugin version")
 	generateCmd.PersistentFlags().String("shellPlugin", "", "provide shell plugin version")
 	generateCmd.PersistentFlags().Bool("ignoreUnfixed", true, "provide if unfixed items are to be ignored")
 	generateCmd.PersistentFlags().String("skipFiles", "cosign.key", "provide files to be skipped in trivy plugin")
