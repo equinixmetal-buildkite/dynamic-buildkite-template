@@ -8,13 +8,21 @@ import (
 
 // Generator is the struct to keep the values passed to the trivy step template
 type Generator struct {
-	TrivyPlugin     string
-	ShellPlugin     string
-	Severity        []string
-	IgnoreUnfixed   bool
-	SecurityChecks  []string
-	SkipFiles       string
-	ShellCheckFiles string
+	TrivyPluginEnabled bool
+	TPConfig           TrivyPluginConfig
+}
+
+type TrivyPluginConfig struct {
+	ExitCode          int
+	Timeout           string
+	Severity          string
+	IgnoreUnfixed     bool
+	SecurityChecks    string
+	SkipFiles         string
+	SkipDirs          string
+	ImageRef          string
+	TrivyVersion      string
+	HelmOverridesFile string
 }
 
 // GenerateTrivyStep takes trivy plugin version and shell plugin version

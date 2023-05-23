@@ -9,48 +9,45 @@ import (
 )
 
 func Test_GenerateSuccess(t *testing.T) {
+	tpc := generator.TrivyPluginConfig{
+		Severity:       "CRITICAL,HIGH",
+		SecurityChecks: "config,secret,vuln",
+		IgnoreUnfixed:  true,
+		SkipFiles:      "cosign.key",
+	}
+
 	g := generator.Generator{
-		TrivyPlugin:     "v1.18.2",
-		ShellPlugin:     "v1.2.5",
-		Severity:        []string{"CRITICAL", "HIGH"},
-		SecurityChecks:  []string{"config", "secret", "vuln"},
-		IgnoreUnfixed:   true,
-		SkipFiles:       "cosign.key",
-		ShellCheckFiles: "script.sh",
+		TrivyPluginEnabled: true,
+		TPConfig:           tpc,
 	}
 
 	var sb strings.Builder
 	generator.GenerateTrivyStep(g, &sb, "../../templates/*")
 
 	expected := `
- steps:
+steps:
   - command: ls
     plugins:
-
-      - equinixmetal-buildkite/trivy#v1.18.2:
+      - equinixmetal-buildkite/trivy#:
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           security-checks: config,secret,vuln
           skip-files: 'cosign.key'
-
-
- - label: ":sparkles: SHELL CHECK"
-   plugins:
-   - shellcheck#v1.2.5:
-       files: script.sh
 `
 	require.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(sb.String()), "Generated template does not match")
 }
 
 func Test_GenerateWrongTemplatePath(t *testing.T) {
+	tpc := generator.TrivyPluginConfig{
+		Severity:       "CRITICAL,HIGH",
+		SecurityChecks: "config,secret,vuln",
+		IgnoreUnfixed:  true,
+		SkipFiles:      "cosign.key",
+	}
+
 	g := generator.Generator{
-		TrivyPlugin:     "v1.18.2",
-		ShellPlugin:     "v1.2.5",
-		Severity:        []string{"CRITICAL", "HIGH"},
-		SecurityChecks:  []string{"config", "secret", "vuln"},
-		IgnoreUnfixed:   true,
-		SkipFiles:       "cosign.key",
-		ShellCheckFiles: "script.sh",
+		TrivyPluginEnabled: true,
+		TPConfig:           tpc,
 	}
 
 	var sb strings.Builder

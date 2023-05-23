@@ -7,38 +7,47 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	g = generator.Generator{}
+)
+
 func init() {
-	generateCmd.PersistentFlags().String("trivyPlugin", "", "provide trivy plugin version")
-	generateCmd.PersistentFlags().String("shellPlugin", "", "provide shell plugin version")
-	generateCmd.PersistentFlags().Bool("ignoreUnfixed", true, "provide if unfixed items are to be ignored")
-	generateCmd.PersistentFlags().String("skipFiles", "cosign.key", "provide files to be skipped in trivy plugin")
-	generateCmd.PersistentFlags().String("shellCheckFiles", "script.sh", "provide files to be checked by the shell plugin")
-
-	generateCmd.PersistentFlags().StringArray("severity", []string{"CRITICAL", "HIGH"}, "provide the severity")
-	generateCmd.PersistentFlags().StringArray("securityChecks", []string{"config", "secret", "vuln"}, "provide the security checks")
-}
-
-func Execute() error {
-	return generateCmd.Execute()
+	generateCmd.Flags().Bool("trivy-enabled", false, "Controls whether to generate step for trivy buildkite plugin")
 }
 
 var generateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "Generates trivy step for the provided options",
+	Short: "Generates plugin step for the provided plugins with configurations",
 	Long: `
 Usage of dynamic-buildkite-template
-This Program generates trivy step for the provided options
+This Program generates step for the provided plugins with configurations
 	`,
+	// Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		var g = generator.Generator{
-			TrivyPlugin:     mustGetStringFlag(cmd, "trivyPlugin"),
-			ShellPlugin:     mustGetStringFlag(cmd, "shellPlugin"),
-			Severity:        mustGetStringArrayFlag(cmd, "severity"),
-			IgnoreUnfixed:   mustGetBoolFlag(cmd, "ignoreUnfixed"),
-			SecurityChecks:  mustGetStringArrayFlag(cmd, "securityChecks"),
-			SkipFiles:       mustGetStringFlag(cmd, "skipFiles"),
-			ShellCheckFiles: mustGetStringFlag(cmd, "shellCheckFiles"),
-		}
-		generator.GenerateTrivyStep(g, os.Stdout, "templates/*")
+		CreateGenerator(cmd, args)
 	},
+}
+
+func CreateGenerator(cmd *cobra.Command, args []string) {
+	if mustGetBoolFlag(cmd, "trivy-enabled") {
+		g.TrivyPluginEnabled = true
+		trivyPluginConfig = generator.TrivyPluginConfig{
+			ExitCode:          mustGetIntFlag(cmd, flagPrefix+"exit-code"),
+			Timeout:           mustGetStringFlag(cmd, flagPrefix+"timeout"),
+			Severity:          mustGetStringFlag(cmd, flagPrefix+"severity"),
+			IgnoreUnfixed:     mustGetBoolFlag(cmd, flagPrefix+"ignore-unfixed"),
+			SecurityChecks:    mustGetStringFlag(cmd, flagPrefix+"security-checks"),
+			SkipFiles:         mustGetStringFlag(cmd, flagPrefix+"skip-files"),
+			SkipDirs:          mustGetStringFlag(cmd, flagPrefix+"skip-dirs"),
+			ImageRef:          mustGetStringFlag(cmd, flagPrefix+"image-ref"),
+			TrivyVersion:      mustGetStringFlag(cmd, flagPrefix+"trivy-version"),
+			HelmOverridesFile: mustGetStringFlag(cmd, flagPrefix+"helm-overrides-file"),
+		}
+		g.TPConfig = trivyPluginConfig
+		generator.GenerateTrivyStep(g, os.Stdout, "templates/*")
+	}
+}
+
+func Execute() error {
+	return generateCmd.Execute()
 }
