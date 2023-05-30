@@ -6,12 +6,14 @@ import (
 	"text/template"
 )
 
-// Generator is the struct to keep the values passed to the trivy step template
+// Generator keeps the state of the generator
+// where enabled plugin with the respective config is kept
 type Generator struct {
 	TrivyPluginEnabled bool
 	TPConfig           TrivyPluginConfig
 }
 
+// TrivyPluginConfig stores the various configurations for trivy plugin
 type TrivyPluginConfig struct {
 	ExitCode          int
 	Timeout           string
