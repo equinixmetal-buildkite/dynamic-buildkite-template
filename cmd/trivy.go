@@ -25,7 +25,7 @@ Generates trivy plugin step for the given configurations
 func init() {
 
 	trivyCmd.Flags().Int("exit-code", 0, "Controls whether the security scan is blocking or not for trivy buildkite plugin")
-	trivyCmd.Flags().String("timeout", "15m", "Controls the maximum amount of time a scan will run for trivy buildkite plugin")
+	trivyCmd.Flags().String("timeout", "5m0s", "Controls the maximum amount of time a scan will run for trivy buildkite plugin")
 	trivyCmd.Flags().String("severity", "HIGH,CRITICAL", "Controls the severity of the vulnerabilities to be scanned for trivy buildkite plugin")
 	trivyCmd.Flags().Bool("ignore-unfixed", true, "Controls whether to display only fixed vulnerabilities for trivy buildkite plugin")
 	trivyCmd.Flags().String("security-checks", "vuln,config", "Controls the security checks to be performed for trivy buildkite plugin")
