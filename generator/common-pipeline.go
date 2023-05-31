@@ -6,36 +6,41 @@ import (
 	"text/template"
 )
 
-// Generator is the struct to keep the values passed to the trivy step template
+// Generator keeps the state of the generator
+// where enabled plugin with the respective config is kept
 type Generator struct {
-	TrivyPlugin    string
-	ShellPlugin    string
-	Severity       []string
-	IgnoreUnfixed  bool
-	SecurityChecks []string
-	SkipFiles      string
+	TrivyPluginEnabled bool
+	TPConfig           TrivyPluginConfig
+}
+
+// TrivyPluginConfig stores the various configurations for trivy plugin
+type TrivyPluginConfig struct {
+	ExitCode          int
+	Timeout           string
+	Severity          string
+	IgnoreUnfixed     bool
+	SecurityChecks    string
+	SkipFiles         string
+	SkipDirs          string
+	ImageRef          string
+	TrivyVersion      string
+	HelmOverridesFile string
 }
 
 // GenerateTrivyStep takes trivy plugin version and shell plugin version
 // and an io.Writer to generate trivy step configuration. The trivy step is
 // written to the provided io.Writer.
 // It returns error in case write to the io.Writer errors out.
-func GenerateTrivyStep(trivyPlugin, shellPlugin string, w io.Writer) error {
-	generator := Generator{
-		TrivyPlugin:    trivyPlugin,
-		ShellPlugin:    shellPlugin,
-		Severity:       []string{"CRITICAL", "HIGH"},
-		IgnoreUnfixed:  true,
-		SecurityChecks: []string{"config", "secret", "vuln"},
-		SkipFiles:      "cosign.key",
-	}
-
+func GenerateTrivyStep(g Generator, w io.Writer, templateFolderPath string) error {
 	funcMap := template.FuncMap{
 		"join": func(arr []string) string {
 			return strings.Join(arr, ",")
 		},
 	}
 
-	tpl := template.Must(template.New("").Funcs(funcMap).ParseGlob("templates/*"))
-	return tpl.ExecuteTemplate(w, "trivy-step.tmpl", generator)
+	tpl, err := template.New("").Funcs(funcMap).ParseGlob(templateFolderPath)
+	if err != nil {
+		return err
+	}
+	return tpl.ExecuteTemplate(w, "trivy-step.tmpl", g)
 }
