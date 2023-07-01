@@ -4,11 +4,9 @@ import (
 	"dynamic-buildkite-template/cmd"
 	"dynamic-buildkite-template/config"
 	"os"
-)
 
-func main() {
-	cmd.Execute()
-}
+	log "github.com/sirupsen/logrus"
+)
 
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
