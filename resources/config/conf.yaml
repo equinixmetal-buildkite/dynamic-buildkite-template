@@ -10,3 +10,14 @@ plugins:
     image-ref: ""
     version: ""
     helm-overrides-files: ""
+  cosign:
+    image: "ghcr.io/my-project/my-image:latest"
+    keyless: true
+    keyless-config:
+      fulcio_url: "https://fulcio.sigstore.dev"
+      rekor_url: "https://rekor.sigstore.dev"
+    keyed-config:
+      key: "sample-key"
+    cosign-version: "v0.1.0"
+
+# --overrides plugins.trivy.skip-files="x.txt,y.txt" --overrides plugins.cosign.keyless=false

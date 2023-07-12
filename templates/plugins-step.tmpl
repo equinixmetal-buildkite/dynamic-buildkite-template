@@ -1,6 +1,27 @@
 steps:
   - command: ls
     plugins:
+{{- if .CosignPluginEnabled }}
+      - equinixmetal-buildkite/cosign#{{ .CosignConfig.CosignVersion }}:
+          {{- if .CosignConfig.Image}}
+          image: {{ .CosignConfig.Image }}
+          {{- end }}
+          {{- if not .CosignConfig.Keyless}}
+          keyless : {{ .CosignConfig.Keyless }}
+          {{- end }}
+          {{- if .CosignConfig.Keyless}}
+          keyless-config:
+            fulcio-url: {{ .CosignConfig.KeylessConfig.FulcioURL }}
+            rekor-url: {{ .CosignConfig.KeylessConfig.RekorURL }}
+          {{- end }}
+          {{- if not .CosignConfig.Keyless}}
+          keyed-config:
+            key: {{ .CosignConfig.KeyedConfig.Key }}
+          {{- end }}
+          {{- if .CosignConfig.CosignVersion}}
+          cosign-version: {{ .CosignConfig.CosignVersion }}
+          {{- end }}
+{{- end}}
 {{- if .TrivyPluginEnabled }}
       - equinixmetal-buildkite/trivy#{{ .TPConfig.TrivyVersion }}:
           {{- if .TPConfig.ExitCode}}

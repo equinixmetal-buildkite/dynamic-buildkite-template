@@ -1,10 +1,31 @@
 package cmd
 
 import (
-	"log"
+	"dynamic-buildkite-template/util"
+	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
 )
+
+func setFromStringFlag(f *string, cmd *cobra.Command, name string) {
+	if cmd.Flags().Lookup(name).Changed {
+		*f = mustGetStringFlag(cmd, name)
+	}
+}
+
+func setFromBoolFlag(f *bool, cmd *cobra.Command, name string) {
+	if cmd.Flags().Lookup(name).Changed {
+		*f = mustGetBoolFlag(cmd, name)
+	}
+}
+
+func setFromIntFlag(f *int, cmd *cobra.Command, name string) {
+	if cmd.Flags().Lookup(name).Changed {
+		*f = mustGetIntFlag(cmd, name)
+	}
+}
 
 func mustGetStringFlag(cmd *cobra.Command, name string) string {
 	flagVal, err := cmd.Flags().GetString(name)
@@ -37,4 +58,16 @@ func subCommandExists(cmd *cobra.Command, name string) bool {
 		}
 	}
 	return false
+}
+
+// GetLatestPluginTag fetches the latest release tag of a plugin based on the repoName passed to it
+func GetLatestPluginTag(repoName string) string {
+	githubPAT := os.Getenv("GITHUB_PAT") // it looks for Github Personal Access Token
+	githubOrg := "equinixmetal-buildkite"
+	tag, err := util.GetLatestTag(githubPAT, githubOrg, repoName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Infof("Latest %s plugin tag: %s", repoName, tag)
+	return tag
 }
