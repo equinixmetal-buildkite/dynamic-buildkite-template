@@ -53,5 +53,5 @@ func Test_GenerateWrongTemplatePath(t *testing.T) {
 	var sb strings.Builder
 	err := generator.GenerateBuildSteps(g, &sb, "../templates/plugins-step.tmpl") // wrong template path
 
-	require.ErrorContains(t, err, "The system cannot find the path specified.", "Error generating trivy step")
+	require.ErrorContains(t, err, "no such file or directory", "Error generating trivy step")
 }
