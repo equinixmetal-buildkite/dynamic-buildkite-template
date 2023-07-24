@@ -14,12 +14,12 @@ type GithubLatestReleaseResponse struct {
 }
 
 // GetLatestTag fetches the latest released tag from a github repo
-func GetLatestTag(githubPAT, githubOrg, repo string) (string, error) {
+func GetLatestTag(gitToken, githubOrg, repo string) (string, error) {
 	// we can move timeout to conf.yaml as configuration
 	// as part of https://github.com/equinixmetal-buildkite/dynamic-buildkite-template/pull/19/files
 	timeout := 15 * time.Second
 
-	githubAPIURL := fmt.Sprintf("https://%s:@api.github.com/repos/%s/%s", githubPAT, githubOrg, repo)
+	githubAPIURL := fmt.Sprintf("https://%s:@api.github.com/repos/%s/%s", gitToken, githubOrg, repo)
 
 	req, err := http.NewRequest(http.MethodGet, githubAPIURL, nil)
 	if err != nil {
