@@ -5,59 +5,35 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 	"time"
 )
 
 // GithubLatestReleaseResponse is used to unmarshal the response while fetching the github latest release
 type GithubLatestReleaseResponse struct {
-	URL       string `json:"url"`
-	AssetsURL string `json:"assets_url"`
-	UploadURL string `json:"upload_url"`
-	HTMLURL   string `json:"html_url"`
-	ID        int    `json:"id"`
-	Author    struct {
-		Login             string `json:"login"`
-		ID                int    `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"author"`
-	NodeID          string    `json:"node_id"`
-	TagName         string    `json:"tag_name"`
-	TargetCommitish string    `json:"target_commitish"`
-	Name            string    `json:"name"`
-	Draft           bool      `json:"draft"`
-	Prerelease      bool      `json:"prerelease"`
-	CreatedAt       time.Time `json:"created_at"`
-	PublishedAt     time.Time `json:"published_at"`
-	Assets          []any     `json:"assets"`
-	TarballURL      string    `json:"tarball_url"`
-	ZipballURL      string    `json:"zipball_url"`
-	Body            string    `json:"body"`
-	MentionsCount   int       `json:"mentions_count"`
+	TagName string `json:"tag_name"`
 }
 
 // GetLatestTag fetches the latest released tag from a github repo
 func GetLatestTag(githubPAT, githubOrg, repo string) (string, error) {
+	// we can move timeout to conf.yaml as configuration
+	// as part of https://github.com/equinixmetal-buildkite/dynamic-buildkite-template/pull/19/files
+	timeout := 15 * time.Second
+
 	githubAPIURL := fmt.Sprintf("https://%s:@api.github.com/repos/%s/%s", githubPAT, githubOrg, repo)
 
-	latestURL := fmt.Sprintf("%s/releases/latest", githubAPIURL)
+	req, err := http.NewRequest(http.MethodGet, githubAPIURL, nil)
+	if err != nil {
+		return "", fmt.Errorf("error while creating request to fetch the latest tag: %w", err)
+	}
+	req.Header.Add("Accept", "application/vnd.github+json")
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", gitToken))
+	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
 
-	resp, err := http.Get(latestURL)
+	client := http.Client{
+		Timeout: timeout,
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("error while fetching latest tag: %w", err)
 	}
@@ -73,10 +49,7 @@ func GetLatestTag(githubPAT, githubOrg, repo string) (string, error) {
 	}
 
 	var ghLastestReleaseResp GithubLatestReleaseResponse
-	decoder := json.NewDecoder(strings.NewReader(string(b)))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&ghLastestReleaseResp)
-	// err = json.Unmarshal(b, &ghLastestReleaseResp)
+	err = json.Unmarshal(b, &ghLastestReleaseResp)
 	if err != nil {
 		return "", fmt.Errorf("error unmarshalling response while fetching latest tag: %w", err)
 	}
