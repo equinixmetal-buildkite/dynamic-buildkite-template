@@ -19,7 +19,7 @@ func GetLatestTag(gitToken, githubOrg, repo string) (string, error) {
 	// as part of https://github.com/equinixmetal-buildkite/dynamic-buildkite-template/pull/19/files
 	timeout := 15 * time.Second
 
-	githubAPIURL := fmt.Sprintf("https://%s:@api.github.com/repos/%s/%s", gitToken, githubOrg, repo)
+	githubAPIURL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", githubOrg, repo)
 
 	req, err := http.NewRequest(http.MethodGet, githubAPIURL, nil)
 	if err != nil {
@@ -35,7 +35,7 @@ func GetLatestTag(gitToken, githubOrg, repo string) (string, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("error while fetching latest tag: %w", err)
+		return "", fmt.Errorf("error while sending request to fetch the latest tag: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -56,3 +56,4 @@ func GetLatestTag(gitToken, githubOrg, repo string) (string, error) {
 
 	return ghLastestReleaseResp.TagName, nil
 }
+
