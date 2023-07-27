@@ -3,8 +3,6 @@ package generator
 import (
 	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 type testCase struct {
@@ -16,7 +14,7 @@ type testCase struct {
 	expVal       string
 }
 
-func Test_GenerateTrivyStep(t *testing.T) {
+func TestGenerateTrivyStep(t *testing.T) {
 	tpc := TrivyPluginConfig{
 		Severity:       "CRITICAL,HIGH",
 		SecurityChecks: "config,secret,vuln",
@@ -50,9 +48,15 @@ steps:
 				var sb strings.Builder
 				err := GenerateTrivyStep(g, &sb, tc.templatePath)
 				if tc.hasError {
-					require.ErrorContains(t, err, tc.errMsg)
+					if !strings.Contains(err.Error(), tc.errMsg) {
+						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
+					}
 				} else {
-					require.Equal(t, strings.TrimSpace(tc.expVal), strings.TrimSpace(sb.String()))
+					if strings.TrimSpace(tc.expVal) != strings.TrimSpace(sb.String()) {
+						t.Fatalf("Not equal: \n"+
+							"expected: %s\n"+
+							"actual  : %s\n", strings.TrimSpace(tc.expVal), strings.TrimSpace(sb.String()))
+					}
 				}
 			},
 		)
