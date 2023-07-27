@@ -3,8 +3,6 @@ package util
 import (
 	"os"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 type testCase struct {
@@ -21,7 +19,7 @@ type gitDetails struct {
 	Repo string
 }
 
-func Test_GetLatestTag(t *testing.T) {
+func TestGetLatestTag(t *testing.T) {
 	cases := []testCase{
 		{
 			"PAT_provided",
@@ -46,15 +44,23 @@ func Test_GetLatestTag(t *testing.T) {
 				tag, err := GetLatestTag(tc.input.PAT, tc.input.Org, tc.input.Repo)
 
 				if tc.hasError {
-					require.ErrorContains(t, err, tc.errMsg)
+				        if !strings.Contains(err.Error(), tc.errMsg) {
+						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
+					}
 				} else {
-					require.NoError(t, err)
+					if err != nil {
+						t.Fatalf("Error %s is not nil", err.Error())
+					}
 				}
 
 				if tc.isEmpty {
-					require.Empty(t, tag)
+					if strings.TrimSpace(tag) != "" {
+						t.Fatalf("Tag expected to be blank but has value: %s", tag)
+					}
 				} else {
-					require.NotEmpty(t, tag)
+					if strings.TrimSpace(tag) == "" {
+						t.Fatal("Tag expected to have value but is blank")
+					}	
 				}
 			},
 		)
