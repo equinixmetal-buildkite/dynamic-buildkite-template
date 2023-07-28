@@ -2,6 +2,7 @@ package util
 
 import (
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -44,7 +45,7 @@ func TestGetLatestTag(t *testing.T) {
 				tag, err := GetLatestTag(tc.input.PAT, tc.input.Org, tc.input.Repo)
 
 				if tc.hasError {
-				        if !strings.Contains(err.Error(), tc.errMsg) {
+					if !strings.Contains(err.Error(), tc.errMsg) {
 						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
 					}
 				} else {
@@ -60,7 +61,7 @@ func TestGetLatestTag(t *testing.T) {
 				} else {
 					if strings.TrimSpace(tag) == "" {
 						t.Fatal("Tag expected to have value but is blank")
-					}	
+					}
 				}
 			},
 		)
