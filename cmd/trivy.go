@@ -3,6 +3,7 @@ package cmd
 import (
 	"dynamic-buildkite-template/generator"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -32,7 +33,7 @@ func init() {
 	trivyCmd.Flags().String("skip-files", "", "Controls the files to be skipped during the scan for trivy buildkite plugin")
 	trivyCmd.Flags().String("skip-dirs", "", "Controls the directories to be skipped during the scan for trivy buildkite plugin")
 	trivyCmd.Flags().String("image-ref", "", "Controls the image reference to be scanned for trivy buildkite plugin")
-	trivyCmd.Flags().String("version", "v1.18.2", "Controls the version of trivy to be used for trivy buildkite plugin")
+	trivyCmd.Flags().String("version", "", "Controls the version of trivy to be used for trivy buildkite plugin")
 	trivyCmd.Flags().String("helm-overrides-file", "", "To pass helm override values to trivy config scan for trivy buildkite pluginn")
 
 	generateCmd.AddCommand(trivyCmd)
@@ -52,6 +53,9 @@ func CreateGenerator(cmd *cobra.Command, args []string) {
 		ImageRef:          mustGetStringFlag(cmd, "image-ref"),
 		TrivyVersion:      mustGetStringFlag(cmd, "version"),
 		HelmOverridesFile: mustGetStringFlag(cmd, "helm-overrides-file"),
+	}
+	if strings.TrimSpace(trivyPluginConfig.TrivyVersion) == "" {
+		trivyPluginConfig.TrivyVersion = GetLatestTrivyPluginTag()
 	}
 	g.TPConfig = trivyPluginConfig
 	generator.GenerateTrivyStep(g, os.Stdout, "templates/*")
