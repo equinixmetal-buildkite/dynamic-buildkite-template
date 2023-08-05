@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"dynamic-buildkite-template/util"
 	"log"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -37,4 +39,15 @@ func subCommandExists(cmd *cobra.Command, name string) bool {
 		}
 	}
 	return false
+}
+
+func GetLatestTrivyPluginTag() string {
+	githubPAT := os.Getenv("GITHUB_PAT")
+	githubOrg := "equinixmetal-buildkite"
+	repo := "trivy-buildkite-plugin"
+	tag, err := util.GetLatestTag(githubPAT, githubOrg, repo)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tag
 }
