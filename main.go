@@ -2,7 +2,6 @@ package main
 
 import (
 	"dynamic-buildkite-template/cmd"
-	"dynamic-buildkite-template/config"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -18,11 +17,8 @@ func init() {
 
 	// Only log the error severity or above.
 	log.SetLevel(log.ErrorLevel)
-
-	if err := config.LoadConfig("resources/config"); err != nil {
-		panic(err)
-	}
 }
 func main() {
+
 	cmd.Execute()
 }

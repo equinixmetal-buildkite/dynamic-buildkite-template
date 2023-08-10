@@ -50,7 +50,7 @@ steps:
 
   Using command line flags to override timeout
   ```
-  $ go run main.go trivy --timeouit=7m15s
+  $ go run main.go trivy --timeout=7m15s
   steps:
     - command: ls
       plugins:
