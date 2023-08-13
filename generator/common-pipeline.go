@@ -2,7 +2,7 @@ package generator
 
 import (
 	"io"
-	"io/ioutil"
+	"os"
 	"text/template"
 )
 
@@ -10,7 +10,7 @@ import (
 // to generate build step configuration. The build step is written to the provided io.Writer.
 // It returns error in case write to the io.Writer errors out.
 func GenerateBuildSteps(g Generator, w io.Writer, templateFilePath string) error {
-	file, err := ioutil.ReadFile(templateFilePath)
+	file, err := os.ReadFile(templateFilePath)
 	if err != nil {
 		return err
 	}

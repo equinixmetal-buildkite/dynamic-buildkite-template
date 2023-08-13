@@ -32,8 +32,8 @@ steps:
           skip-files: 'cosign.key'
 `
 	cases := []testCase{
-		{"success", tpc, "../templates/*", false, "", expected},
-		{"wrong_template_path", tpc, "templates/*", true, "template: pattern matches no files", ""},
+		{"success", tpc, "../templates/plugins-step.tmpl", false, "", expected},
+		{"wrong_template_path", tpc, "../templates/xyz.tmpl", true, "no such file or directory", ""},
 	}
 
 	g := Generator{
@@ -46,7 +46,7 @@ steps:
 			tc.name,
 			func(t *testing.T) {
 				var sb strings.Builder
-				err := GenerateTrivyStep(g, &sb, tc.templatePath)
+				err := GenerateBuildSteps(g, &sb, tc.templatePath)
 				if tc.hasError {
 					if !strings.Contains(err.Error(), tc.errMsg) {
 						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
