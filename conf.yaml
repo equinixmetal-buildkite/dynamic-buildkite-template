@@ -1,8 +1,8 @@
 plugins:
   trivy:
     exit-code: 0
-    timeout: 5m0s
-    severity: HIGH,CRITICAL
+    timeout: 51m0s
+    severity: HIGH
     ignore-unfixed: true
     security-checks: vuln,config
     skip-files: ""
@@ -10,7 +10,7 @@ plugins:
     image-ref: ""
     version: ""
     helm-overrides-files: ""
-  cosign:
+cosign:
     image: "ghcr.io/my-project/my-image:latest"
     keyless: true
     keyless-config:

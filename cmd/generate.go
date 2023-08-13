@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"dynamic-buildkite-template/config"
 	"dynamic-buildkite-template/generator"
 	"dynamic-buildkite-template/util"
 	"os"
@@ -11,12 +12,25 @@ import (
 )
 
 var (
-	g = generator.Generator{} // generator object containing all plugin configuration
+	g              = generator.Generator{} // generator object containing all plugin configuration
+	ConfigFilePath string
 )
 
 func init() {
+	cobra.OnInitialize(initConfig)
 	// set the flag for passing overrides
 	generateCmd.Flags().StringToString("overrides", nil, `pass the overrides in the maps syntax as --overrides plugins.trivy.skip-files="x.txt,y.txt" --overrides plugins.cosign.keyless=false`)
+
+	generateCmd.PersistentFlags().StringVar(&ConfigFilePath, "config", "conf.yaml", "Mention the config file path")
+}
+
+func initConfig() {
+	if ConfigFilePath != "" {
+		log.Debug("Config Path:", ConfigFilePath)
+		if err := config.LoadConfig(ConfigFilePath); err != nil {
+			log.Warn("Error while loading the configuration file. Loading the defaults")
+		}
+	}
 }
 
 var generateCmd = &cobra.Command{
@@ -38,6 +52,10 @@ This Program generates step for the provided plugins with configurations
 	},
 }
 
+func Execute() error {
+	return generateCmd.Execute()
+}
+
 // ParseOverrides checks for command line flags for the overrides and updates the viper global object
 func ParseOverrides(g generator.Generator, cmd *cobra.Command) {
 	m, err := cmd.Flags().GetStringToString("overrides") // check for --overrides flag for map[string]string
@@ -51,8 +69,4 @@ func ParseOverrides(g generator.Generator, cmd *cobra.Command) {
 	}
 
 	viper.MergeConfigMap(vNew.AllSettings()) // merge to global viper object
-}
-
-func Execute() error {
-	return generateCmd.Execute()
 }
