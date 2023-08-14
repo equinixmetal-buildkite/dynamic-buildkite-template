@@ -33,8 +33,8 @@ steps:
           skip-files: 'cosign.key'
 ```
 ## Configuration and Overrides
-* Configurations are stored in `resources/config/conf.yaml` and it has default values.
-* Configurations from the file `resources/config/conf.yaml` can be overridden by command line flags as this example:
+* Configurations are stored in `conf.yaml` and it has default values.
+* Configurations from the file `conf.yaml` can be overridden by command line flags as this example:
   Using default configs
   ```
   $ go run main.go trivy
