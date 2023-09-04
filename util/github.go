@@ -40,7 +40,7 @@ func GetLatestTag(gitToken, githubOrg, repo string) (string, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("error while fetching latest tag. Status code: %d. Please check if you've declared GITHUB_PAT env variable", resp.StatusCode)
+		return "", fmt.Errorf("error while fetching latest tag. Status Code: %d. Please check if you've declared GITHUB_PAT env variable", resp.StatusCode)
 	}
 
 	b, err := io.ReadAll(resp.Body)
