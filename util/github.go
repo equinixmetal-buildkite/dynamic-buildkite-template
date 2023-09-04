@@ -2,16 +2,10 @@ package util
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
-)
-
-var (
-	ErrRequestingLatestTag = errors.New("error requesting latest tag")
-	ErrFetchingLatestTag   = errors.New("error fetching latest tag")
 )
 
 // GithubLatestReleaseResponse is used to unmarshal the response while fetching the github latest release
@@ -32,9 +26,7 @@ func GetLatestTag(gitToken, githubOrg, repo string) (string, error) {
 		return "", fmt.Errorf("error while creating request to fetch the latest tag: %w", err)
 	}
 	req.Header.Add("Accept", "application/vnd.github+json")
-	if gitToken != "" {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", gitToken))
-	}
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", gitToken))
 	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
 
 	client := http.Client{
@@ -43,16 +35,12 @@ func GetLatestTag(gitToken, githubOrg, repo string) (string, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("%w: %s", ErrRequestingLatestTag, err)
+		return "", fmt.Errorf("error while sending request to fetch the latest tag: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		errMsg := resp.Status
-		if body, err := io.ReadAll(resp.Body); err == nil {
-			errMsg = fmt.Sprintf("%s: %s", errMsg, body)
-		}
-		return "", fmt.Errorf("%w: %s", ErrFetchingLatestTag, errMsg)
+		return "", fmt.Errorf("error while fetching latest tag. Status code: %d. Please check if you've declared GITHUB_PAT env variable", resp.StatusCode)
 	}
 
 	b, err := io.ReadAll(resp.Body)
