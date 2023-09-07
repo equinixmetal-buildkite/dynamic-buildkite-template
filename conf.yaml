@@ -1,7 +1,7 @@
 plugins:
   trivy:
     exit-code: 0
-    timeout: 51m0s
+    timeout: 5m0s
     severity: HIGH
     ignore-unfixed: true
     security-checks: vuln,config

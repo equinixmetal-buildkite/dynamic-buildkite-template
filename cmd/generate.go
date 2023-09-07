@@ -3,14 +3,16 @@ package cmd
 import (
 	"dynamic-buildkite-template/config"
 	"dynamic-buildkite-template/generator"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var (
-	g              = generator.Generator{}
-	ConfigFilePath string
+	g                     = generator.Generator{}
+	ConfigFilePath        string
+	defaultConfigFilePath = "conf.yaml"
 )
 
 var generateCmd = &cobra.Command{
@@ -26,14 +28,19 @@ This Program generates step for the provided plugins with configurations
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	generateCmd.PersistentFlags().StringVar(&ConfigFilePath, "config", "conf.yaml", "Mention the config file path")
+	generateCmd.PersistentFlags().StringVar(&ConfigFilePath, "config", "", fmt.Sprintf("Mention the config file path (default \"%s\")", defaultConfigFilePath))
 }
 
 func initConfig() {
 	if ConfigFilePath != "" {
 		log.Debug("Config Path:", ConfigFilePath)
 		if err := config.LoadConfig(ConfigFilePath); err != nil {
-			log.Warn("Error while loading the configuration file. Loading the defaults")
+			log.Fatal("Error while loading the configuration file. Exiting the program.")
+		}
+	} else {
+		log.Debug("Config Path:", defaultConfigFilePath)
+		if err := config.LoadConfig(defaultConfigFilePath); err != nil {
+			log.Debug("Error while loading the configuration file. Loading the defaults")
 		}
 	}
 }
