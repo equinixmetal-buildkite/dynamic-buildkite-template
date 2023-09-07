@@ -26,10 +26,10 @@ steps:
   - command: ls
     plugins:
       - equinixmetal-buildkite/trivy#:
-          severity: CRITICAL,HIGH
+          severity: "CRITICAL,HIGH"
           ignore-unfixed: true
-          security-checks: config,secret,vuln
-          skip-files: 'cosign.key'
+          security-checks: "config,secret,vuln"
+          skip-files: "cosign.key"
 `
 	cases := []testCase{
 		{"success", tpc, "../templates/*", false, "", expected},

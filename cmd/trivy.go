@@ -5,7 +5,10 @@ import (
 	"os"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -24,7 +27,7 @@ Generates trivy plugin step for the given configurations
 }
 
 func init() {
-
+	// Defaults are placeholders here. Actual defaults are defined in the config file
 	trivyCmd.Flags().Int("exit-code", 0, "Controls whether the security scan is blocking or not for trivy buildkite plugin")
 	trivyCmd.Flags().String("timeout", "5m0s", "Controls the maximum amount of time a scan will run for trivy buildkite plugin")
 	trivyCmd.Flags().String("severity", "HIGH,CRITICAL", "Controls the severity of the vulnerabilities to be scanned for trivy buildkite plugin")
@@ -42,18 +45,30 @@ func init() {
 // CreateGenerator populates the TrivyPluginConfig by reading the values from the command line flags
 func CreateGenerator(cmd *cobra.Command, args []string) {
 	g.TrivyPluginEnabled = true
-	trivyPluginConfig = generator.TrivyPluginConfig{
-		ExitCode:          mustGetIntFlag(cmd, "exit-code"),
-		Timeout:           mustGetStringFlag(cmd, "timeout"),
-		Severity:          mustGetStringFlag(cmd, "severity"),
-		IgnoreUnfixed:     mustGetBoolFlag(cmd, "ignore-unfixed"),
-		SecurityChecks:    mustGetStringFlag(cmd, "security-checks"),
-		SkipFiles:         mustGetStringFlag(cmd, "skip-files"),
-		SkipDirs:          mustGetStringFlag(cmd, "skip-dirs"),
-		ImageRef:          mustGetStringFlag(cmd, "image-ref"),
-		TrivyVersion:      mustGetStringFlag(cmd, "version"),
-		HelmOverridesFile: mustGetStringFlag(cmd, "helm-overrides-file"),
+	// load from config
+	s := viper.Sub("plugins.trivy")
+	doLookup := true
+	if s == nil {
+		log.Warn("Trivy Plugin configuration not found in the config file or wrong config file. Proceeding with defaults from command line flags.")
+		doLookup = false
+	} else {
+		err := s.Unmarshal(&trivyPluginConfig)
+		if err != nil {
+			log.Error("Error unmarshalling config file", err)
+		}
 	}
+
+	setFromIntFlag(&trivyPluginConfig.ExitCode, cmd, "exit-code", doLookup)
+	setFromStringFlag(&trivyPluginConfig.Timeout, cmd, "timeout", doLookup)
+	setFromStringFlag(&trivyPluginConfig.Severity, cmd, "severity", doLookup)
+	setFromBoolFlag(&trivyPluginConfig.IgnoreUnfixed, cmd, "ignore-unfixed", doLookup)
+	setFromStringFlag(&trivyPluginConfig.SecurityChecks, cmd, "security-checks", doLookup)
+	setFromStringFlag(&trivyPluginConfig.SkipFiles, cmd, "skip-files", doLookup)
+	setFromStringFlag(&trivyPluginConfig.SkipDirs, cmd, "skip-dirs", doLookup)
+	setFromStringFlag(&trivyPluginConfig.ImageRef, cmd, "image-ref", doLookup)
+	setFromStringFlag(&trivyPluginConfig.TrivyVersion, cmd, "version", doLookup)
+	setFromStringFlag(&trivyPluginConfig.HelmOverridesFile, cmd, "helm-overrides-file", doLookup)
+
 	if strings.TrimSpace(trivyPluginConfig.TrivyVersion) == "" {
 		trivyPluginConfig.TrivyVersion = GetLatestTrivyPluginTag()
 	}

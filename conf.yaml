@@ -1,0 +1,12 @@
+plugins:
+  trivy:
+    exit-code: 0
+    timeout: 51m0s
+    severity: HIGH
+    ignore-unfixed: true
+    security-checks: vuln,config
+    skip-files: ""
+    skip-dirs: ""
+    image-ref: ""
+    version: ""
+    helm-overrides-files: ""
