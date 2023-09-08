@@ -7,7 +7,7 @@ steps:
           exit-code: {{ .TPConfig.ExitCode }}
           {{- end }}
           {{- if .TPConfig.Timeout}}
-          timeout : {{ .TPConfig.Timeout }}
+          timeout : "{{ .TPConfig.Timeout }}"
           {{- end }}
           {{- if .TPConfig.Severity}}
           severity: "{{ .TPConfig.Severity }}"
@@ -27,7 +27,7 @@ steps:
           {{- if .TPConfig.ImageRef}}
           image-ref: "{{ .TPConfig.ImageRef }}"
           {{- end }}
-          {{- if .TPConfig.HelmOverridesFiles}}
-          helm-overrides-file: "{{ .TPConfig.HelmOverridesFiles }}"
+          {{- if .TPConfig.HelmOverridesFile}}
+          helm-overrides-file: "{{ .TPConfig.HelmOverridesFile }}"
           {{- end }}
 {{- end}}

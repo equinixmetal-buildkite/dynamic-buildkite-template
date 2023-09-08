@@ -58,19 +58,20 @@ func CreateGenerator(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	setFromIntFlag(&trivyPluginConfig.ExitCode, cmd, "exit-code", doLookup)
-	setFromStringFlag(&trivyPluginConfig.Timeout, cmd, "timeout", doLookup)
-	setFromStringFlag(&trivyPluginConfig.Severity, cmd, "severity", doLookup)
-	setFromBoolFlag(&trivyPluginConfig.IgnoreUnfixed, cmd, "ignore-unfixed", doLookup)
-	setFromStringFlag(&trivyPluginConfig.SecurityChecks, cmd, "security-checks", doLookup)
-	setFromStringFlag(&trivyPluginConfig.SkipFiles, cmd, "skip-files", doLookup)
-	setFromStringFlag(&trivyPluginConfig.SkipDirs, cmd, "skip-dirs", doLookup)
-	setFromStringFlag(&trivyPluginConfig.ImageRef, cmd, "image-ref", doLookup)
-	setFromStringFlag(&trivyPluginConfig.TrivyVersion, cmd, "version", doLookup)
-	setFromStringFlag(&trivyPluginConfig.HelmOverridesFile, cmd, "helm-overrides-file", doLookup)
+	setFromIntFlag(trivyPluginConfig.ExitCode, cmd, "exit-code", doLookup)
+	setFromStringFlag(trivyPluginConfig.Timeout, cmd, "timeout", doLookup)
+	setFromStringFlag(trivyPluginConfig.Severity, cmd, "severity", doLookup)
+	setFromBoolFlag(trivyPluginConfig.IgnoreUnfixed, cmd, "ignore-unfixed", doLookup)
+	setFromStringFlag(trivyPluginConfig.SecurityChecks, cmd, "security-checks", doLookup)
+	setFromStringFlag(trivyPluginConfig.SkipFiles, cmd, "skip-files", doLookup)
+	setFromStringFlag(trivyPluginConfig.SkipDirs, cmd, "skip-dirs", doLookup)
+	setFromStringFlag(trivyPluginConfig.ImageRef, cmd, "image-ref", doLookup)
+	setFromStringFlag(trivyPluginConfig.TrivyVersion, cmd, "version", doLookup)
+	setFromStringFlag(trivyPluginConfig.HelmOverridesFile, cmd, "helm-overrides-file", doLookup)
 
-	if strings.TrimSpace(trivyPluginConfig.TrivyVersion) == "" {
-		trivyPluginConfig.TrivyVersion = GetLatestTrivyPluginTag()
+	if strings.TrimSpace(*trivyPluginConfig.TrivyVersion) == "" {
+		lv := GetLatestTrivyPluginTag()
+		trivyPluginConfig.TrivyVersion = &lv
 	}
 	g.TPConfig = trivyPluginConfig
 	generator.GenerateTrivyStep(g, os.Stdout, "templates/*")

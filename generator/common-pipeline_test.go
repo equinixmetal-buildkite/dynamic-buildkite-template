@@ -15,17 +15,22 @@ type testCase struct {
 }
 
 func TestGenerateTrivyStep(t *testing.T) {
+	testSeverity := "CRITICAL,HIGH"
+	testSecurityChecks := "config,secret,vuln"
+	testIgnoreUnfixed := true
+	testSkipFiles := "cosign.key"
+
 	tpc := TrivyPluginConfig{
-		Severity:       "CRITICAL,HIGH",
-		SecurityChecks: "config,secret,vuln",
-		IgnoreUnfixed:  true,
-		SkipFiles:      "cosign.key",
+		Severity:       &testSeverity,
+		SecurityChecks: &testSecurityChecks,
+		IgnoreUnfixed:  &testIgnoreUnfixed,
+		SkipFiles:      &testSkipFiles,
 	}
 	expected := `
 steps:
   - command: ls
     plugins:
-      - equinixmetal-buildkite/trivy#:
+      - equinixmetal-buildkite/trivy#<nil>:
           severity: "CRITICAL,HIGH"
           ignore-unfixed: true
           security-checks: "config,secret,vuln"
