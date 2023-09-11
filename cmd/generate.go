@@ -28,20 +28,21 @@ This Program generates step for the provided plugins with configurations
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	generateCmd.PersistentFlags().StringVar(&ConfigFilePath, "config", "", fmt.Sprintf("Mention the config file path (default \"%s\")", defaultConfigFilePath))
+	generateCmd.PersistentFlags().StringVar(&ConfigFilePath, "config", "", fmt.Sprintf("config file path (default %q)", defaultConfigFilePath))
 }
 
 func initConfig() {
 	if ConfigFilePath != "" {
-		log.Debug("Config Path:", ConfigFilePath)
+		log.Debug("config path: ", ConfigFilePath)
 		if err := config.LoadConfig(ConfigFilePath); err != nil {
-			log.Fatal("Error while loading the configuration file. Exiting the program.")
+			log.Fatal("error while loading the configuration file. Exiting the program.")
 		}
-	} else {
-		log.Debug("Config Path:", defaultConfigFilePath)
-		if err := config.LoadConfig(defaultConfigFilePath); err != nil {
-			log.Debug("Error while loading the configuration file. Loading the defaults")
-		}
+		return
+	}
+
+	log.Debug("config path:", defaultConfigFilePath)
+	if err := config.LoadConfig(defaultConfigFilePath); err != nil {
+		log.Debug("error while loading the configuration file. Loading the defaults")
 	}
 }
 

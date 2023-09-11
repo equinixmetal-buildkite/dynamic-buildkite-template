@@ -44,7 +44,7 @@ func setFromIntFlag(f *int, cmd *cobra.Command, name string, doLookup bool) {
 func mustGetStringFlag(cmd *cobra.Command, name string) string {
 	flagVal, err := cmd.Flags().GetString(name)
 	if err != nil {
-		log.Fatalf("Failed to get value of %s. %s", name, err.Error())
+		log.Fatalf("failed to get value of %s. %s", name, err.Error())
 	}
 	return flagVal
 }
@@ -52,7 +52,7 @@ func mustGetStringFlag(cmd *cobra.Command, name string) string {
 func mustGetBoolFlag(cmd *cobra.Command, name string) bool {
 	flagVal, err := cmd.Flags().GetBool(name)
 	if err != nil {
-		log.Fatalf("Failed to get value of %s. %s", name, err.Error())
+		log.Fatalf("failed to get value of %s. %s", name, err.Error())
 	}
 	return flagVal
 }
@@ -60,7 +60,7 @@ func mustGetBoolFlag(cmd *cobra.Command, name string) bool {
 func mustGetIntFlag(cmd *cobra.Command, name string) int {
 	flagVal, err := cmd.Flags().GetInt(name)
 	if err != nil {
-		log.Fatalf("Failed to get value of %s. %s", name, err.Error())
+		log.Fatalf("failed to get value of %s. %s", name, err.Error())
 	}
 	return flagVal
 }
@@ -73,6 +73,6 @@ func GetLatestTrivyPluginTag() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Info("Latest trivy plugin tag:", tag)
+	log.Info("latest trivy plugin tag: ", tag)
 	return tag
 }
