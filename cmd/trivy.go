@@ -49,12 +49,12 @@ func CreateGenerator(cmd *cobra.Command, args []string) {
 	s := viper.Sub("plugins.trivy")
 	doLookup := true
 	if s == nil {
-		log.Warn("Trivy Plugin configuration not found in the config file or wrong config file. Proceeding with defaults from command line flags.")
+		log.Debug("trivy plugin configuration not found in the config file or wrong config file. Proceeding with defaults from command line flags.")
 		doLookup = false
 	} else {
 		err := s.Unmarshal(&trivyPluginConfig)
 		if err != nil {
-			log.Error("Error unmarshalling config file", err)
+			log.Error("error unmarshalling config file", err)
 		}
 	}
 
