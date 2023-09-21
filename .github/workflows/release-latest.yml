@@ -6,6 +6,9 @@ on:
       - main
   pull_request:
 
+permissions:
+  id-token: write
+
 jobs:
   # Push to latest
   container-push-latest:
