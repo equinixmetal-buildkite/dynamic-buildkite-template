@@ -6,6 +6,11 @@ on:
       - main
   pull_request:
 
+permissions:
+  id-token: write
+  packages: write
+  contents: read
+
 jobs:
   # Push to latest
   container-push-latest:
