@@ -12,6 +12,9 @@ import (
 func setFromStringFlag(f *string, cmd *cobra.Command, name string, doLookup bool) {
 	// if doLookup is set then it would check for command line overrides before overriding the configuration
 	// if doLookup is not set then it would pick the from default command line flag values
+	if f == nil {
+		return
+	}
 	if doLookup {
 		if cmd.Flags().Lookup(name).Changed {
 			*f = mustGetStringFlag(cmd, name)
@@ -22,6 +25,9 @@ func setFromStringFlag(f *string, cmd *cobra.Command, name string, doLookup bool
 }
 
 func setFromBoolFlag(f *bool, cmd *cobra.Command, name string, doLookup bool) {
+	if f == nil {
+		return
+	}
 	if doLookup {
 		if cmd.Flags().Lookup(name).Changed {
 			*f = mustGetBoolFlag(cmd, name)
@@ -32,6 +38,9 @@ func setFromBoolFlag(f *bool, cmd *cobra.Command, name string, doLookup bool) {
 }
 
 func setFromIntFlag(f *int, cmd *cobra.Command, name string, doLookup bool) {
+	if f == nil {
+		return
+	}
 	if doLookup {
 		if cmd.Flags().Lookup(name).Changed {
 			*f = mustGetIntFlag(cmd, name)
