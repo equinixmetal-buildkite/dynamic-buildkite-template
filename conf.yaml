@@ -9,4 +9,4 @@ plugins:
     skip-dirs: ""
     image-ref: ""
     version: ""
-    helm-overrides-files: ""
+    helm-overrides-file: ""

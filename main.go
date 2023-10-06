@@ -16,7 +16,7 @@ func init() {
 	log.SetOutput(os.Stderr)
 
 	// Only log the error severity or above.
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.ErrorLevel)
 }
 func main() {
 

@@ -58,19 +58,55 @@ func CreateGenerator(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	setFromIntFlag(&trivyPluginConfig.ExitCode, cmd, "exit-code", doLookup)
-	setFromStringFlag(&trivyPluginConfig.Timeout, cmd, "timeout", doLookup)
-	setFromStringFlag(&trivyPluginConfig.Severity, cmd, "severity", doLookup)
-	setFromBoolFlag(&trivyPluginConfig.IgnoreUnfixed, cmd, "ignore-unfixed", doLookup)
-	setFromStringFlag(&trivyPluginConfig.SecurityChecks, cmd, "security-checks", doLookup)
-	setFromStringFlag(&trivyPluginConfig.SkipFiles, cmd, "skip-files", doLookup)
-	setFromStringFlag(&trivyPluginConfig.SkipDirs, cmd, "skip-dirs", doLookup)
-	setFromStringFlag(&trivyPluginConfig.ImageRef, cmd, "image-ref", doLookup)
-	setFromStringFlag(&trivyPluginConfig.TrivyVersion, cmd, "version", doLookup)
-	setFromStringFlag(&trivyPluginConfig.HelmOverridesFile, cmd, "helm-overrides-file", doLookup)
+	// initializing nil fields for the cases when conf file is not present or there is command line flag override
+	if (!doLookup || cmd.Flags().Lookup("exit-code").Changed) && trivyPluginConfig.ExitCode == nil {
+		trivyPluginConfig.ExitCode = new(int)
+	}
+	if (!doLookup || cmd.Flags().Lookup("timeout").Changed) && trivyPluginConfig.Timeout == nil {
+		trivyPluginConfig.Timeout = new(string)
+	}
+	if (!doLookup || cmd.Flags().Lookup("severity").Changed) && trivyPluginConfig.Severity == nil {
+		trivyPluginConfig.Severity = new(string)
+	}
+	if (!doLookup || cmd.Flags().Lookup("ignore-unfixed").Changed) && trivyPluginConfig.IgnoreUnfixed == nil {
+		trivyPluginConfig.IgnoreUnfixed = new(bool)
+	}
+	if (!doLookup || cmd.Flags().Lookup("security-checks").Changed) && trivyPluginConfig.SecurityChecks == nil {
+		trivyPluginConfig.SecurityChecks = new(string)
+	}
+	if (!doLookup || cmd.Flags().Lookup("skip-files").Changed) && trivyPluginConfig.SkipFiles == nil {
+		trivyPluginConfig.SkipFiles = new(string)
+	}
+	if (!doLookup || cmd.Flags().Lookup("skip-dirs").Changed) && trivyPluginConfig.SkipDirs == nil {
+		trivyPluginConfig.SkipDirs = new(string)
+	}
+	if (!doLookup || cmd.Flags().Lookup("image-ref").Changed) && trivyPluginConfig.ImageRef == nil {
+		trivyPluginConfig.ImageRef = new(string)
+	}
+	if (!doLookup || cmd.Flags().Lookup("version").Changed) && trivyPluginConfig.TrivyVersion == nil {
+		trivyPluginConfig.TrivyVersion = new(string)
+	}
+	if (!doLookup || cmd.Flags().Lookup("helm-overrides-file").Changed) && trivyPluginConfig.HelmOverridesFile == nil {
+		trivyPluginConfig.HelmOverridesFile = new(string)
+	}
 
-	if strings.TrimSpace(trivyPluginConfig.TrivyVersion) == "" {
-		trivyPluginConfig.TrivyVersion = GetLatestTrivyPluginTag()
+	setFromIntFlag(trivyPluginConfig.ExitCode, cmd, "exit-code", doLookup)
+	setFromStringFlag(trivyPluginConfig.Timeout, cmd, "timeout", doLookup)
+	setFromStringFlag(trivyPluginConfig.Severity, cmd, "severity", doLookup)
+	setFromBoolFlag(trivyPluginConfig.IgnoreUnfixed, cmd, "ignore-unfixed", doLookup)
+	setFromStringFlag(trivyPluginConfig.SecurityChecks, cmd, "security-checks", doLookup)
+	setFromStringFlag(trivyPluginConfig.SkipFiles, cmd, "skip-files", doLookup)
+	setFromStringFlag(trivyPluginConfig.SkipDirs, cmd, "skip-dirs", doLookup)
+	setFromStringFlag(trivyPluginConfig.ImageRef, cmd, "image-ref", doLookup)
+	setFromStringFlag(trivyPluginConfig.TrivyVersion, cmd, "version", doLookup)
+	setFromStringFlag(trivyPluginConfig.HelmOverridesFile, cmd, "helm-overrides-file", doLookup)
+
+	if trivyPluginConfig.TrivyVersion == nil {
+		trivyPluginConfig.TrivyVersion = new(string)
+	}
+	if strings.TrimSpace(*trivyPluginConfig.TrivyVersion) == "" {
+		lv := GetLatestTrivyPluginTag()
+		trivyPluginConfig.TrivyVersion = &lv
 	}
 	g.TPConfig = trivyPluginConfig
 	generator.GenerateTrivyStep(g, os.Stdout, "templates/*")
