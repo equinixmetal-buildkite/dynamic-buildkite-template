@@ -28,27 +28,27 @@ steps:
           exit-code: {{ .TPConfig.ExitCode }}
           {{- end }}
           {{- if .TPConfig.Timeout}}
-          timeout : {{ .TPConfig.Timeout }}
+          timeout : "{{ .TPConfig.Timeout }}"
           {{- end }}
           {{- if .TPConfig.Severity}}
-          severity: {{ .TPConfig.Severity }}
+          severity: "{{ .TPConfig.Severity }}"
           {{- end }}
           {{- if .TPConfig.IgnoreUnfixed}}
           ignore-unfixed: {{ .TPConfig.IgnoreUnfixed }}
           {{- end }}
           {{- if .TPConfig.SecurityChecks}}
-          security-checks: {{ .TPConfig.SecurityChecks }}
+          security-checks: "{{ .TPConfig.SecurityChecks }}"
           {{- end }}
           {{- if .TPConfig.SkipFiles}}
-          skip-files: '{{ .TPConfig.SkipFiles }}'
+          skip-files: "{{ .TPConfig.SkipFiles }}"
           {{- end }}
           {{- if .TPConfig.SkipDirs}}
-          skip-dirs: '{{ .TPConfig.SkipDirs }}'
+          skip-dirs: "{{ .TPConfig.SkipDirs }}"
           {{- end }}
           {{- if .TPConfig.ImageRef}}
-          image-ref: '{{ .TPConfig.ImageRef }}'
+          image-ref: "{{ .TPConfig.ImageRef }}"
           {{- end }}
-          {{- if .TPConfig.HelmOverridesFiles}}
-          helm-overrides-file: '{{ .TPConfig.HelmOverridesFiles }}'
+          {{- if .TPConfig.HelmOverridesFile}}
+          helm-overrides-file: "{{ .TPConfig.HelmOverridesFile }}"
           {{- end }}
 {{- end}}

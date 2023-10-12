@@ -4,6 +4,7 @@ import (
 	"dynamic-buildkite-template/config"
 	"dynamic-buildkite-template/generator"
 	"dynamic-buildkite-template/util"
+	"fmt"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -12,8 +13,9 @@ import (
 )
 
 var (
-	g              = generator.Generator{} // generator object containing all plugin configuration
-	ConfigFilePath string
+	g                     = generator.Generator{}
+	ConfigFilePath        string
+	defaultConfigFilePath = "conf.yaml"
 )
 
 func init() {
@@ -21,16 +23,8 @@ func init() {
 	// set the flag for passing overrides
 	generateCmd.Flags().StringToString("overrides", nil, `pass the overrides in the maps syntax as --overrides plugins.trivy.skip-files="x.txt,y.txt" --overrides plugins.cosign.keyless=false`)
 
-	generateCmd.PersistentFlags().StringVar(&ConfigFilePath, "config", "conf.yaml", "Mention the config file path")
-}
-
-func initConfig() {
-	if ConfigFilePath != "" {
-		log.Debug("Config Path:", ConfigFilePath)
-		if err := config.LoadConfig(ConfigFilePath); err != nil {
-			log.Warn("Error while loading the configuration file. Loading the defaults")
-		}
-	}
+	generateCmd.PersistentFlags().StringVar(&ConfigFilePath, "config", "", fmt.Sprintf("config file path (default %q)", defaultConfigFilePath))
+	// log.Println("cosign enabled:", *cosignEnabled)
 }
 
 var generateCmd = &cobra.Command{
@@ -50,6 +44,21 @@ This Program generates step for the provided plugins with configurations
 		// generate the build template
 		generator.GenerateBuildSteps(g, os.Stdout, util.TEMPLATE_FILE_PATH)
 	},
+}
+
+func initConfig() {
+	if ConfigFilePath != "" {
+		log.Debug("config path: ", ConfigFilePath)
+		if err := config.LoadConfig(ConfigFilePath); err != nil {
+			log.Fatal("error while loading the configuration file. Exiting the program.")
+		}
+		return
+	}
+
+	log.Debug("config path:", defaultConfigFilePath)
+	if err := config.LoadConfig(defaultConfigFilePath); err != nil {
+		log.Fatalf("error while loading the configuration file: %s. Configuration file must be present.", defaultConfigFilePath)
+	}
 }
 
 func Execute() error {

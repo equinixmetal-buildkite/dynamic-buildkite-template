@@ -58,6 +58,3 @@ steps:
           security-checks: vuln,config
           skip-files: 'x.txt,y.txt'
 ```
-  If you notice you can provide multiple `--overrides` flags and this would in turn collate to a `map[string]string` being passed to the program. The keys in override are in the yaml path format. So for a given config override you can check the path hierarchy in the `conf.yaml` and mention the override accordingly.
-
-  For long term config changes, it's suggested to update the `conf.yaml` file itself.

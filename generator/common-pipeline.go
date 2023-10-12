@@ -6,8 +6,9 @@ import (
 	"text/template"
 )
 
-// GenerateBuildSteps takes a Generator object, an io.Writer, and a templateFilePath
-// to generate build step configuration. The build step is written to the provided io.Writer.
+// GenerateTrivyStep takes trivy plugin version and shell plugin version
+// and an io.Writer to generate trivy step configuration. The trivy step is
+// written to the provided io.Writer.
 // It returns error in case write to the io.Writer errors out.
 func GenerateBuildSteps(g Generator, w io.Writer, templateFilePath string) error {
 	file, err := os.ReadFile(templateFilePath)

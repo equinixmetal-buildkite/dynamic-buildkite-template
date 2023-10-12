@@ -29,8 +29,9 @@ func LoadTrivyConfigs() {
 	}
 
 	// fetch latest trivy plugin version, if not defined in the config
-	if strings.TrimSpace(trivyPluginConfig.TrivyVersion) == "" {
-		trivyPluginConfig.TrivyVersion = GetLatestPluginTag("trivy-buildkite-plugin")
+	if strings.TrimSpace(*trivyPluginConfig.TrivyVersion) == "" {
+		lv := GetLatestPluginTag("trivy-buildkite-plugin")
+		trivyPluginConfig.TrivyVersion = &lv
 	}
 	g.TPConfig = trivyPluginConfig
 	// mark trivy plugin as enabled

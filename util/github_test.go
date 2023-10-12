@@ -1,69 +1,79 @@
 package util
 
 import (
+	"errors"
 	"os"
-	"strings"
 	"testing"
 )
 
-type testCase struct {
-	name     string
-	input    gitDetails
-	hasError bool
-	errMsg   string
-	isEmpty  bool
-}
-
-type gitDetails struct {
-	PAT  string
-	Org  string
-	Repo string
-}
-
 func TestGetLatestTag(t *testing.T) {
-	cases := []testCase{
-		{
-			"PAT_provided",
-			gitDetails{os.Getenv("GITHUB_PAT"), "equinixmetal-buildkite", "trivy-buildkite-plugin"},
-			false,
-			"",
-			false,
+	type repo struct {
+		owner  string
+		name   string
+		public bool
+	}
+
+	repos := map[string]repo{
+		"PublicRepo": {
+			"equinixmetal-buildkite",
+			"trivy-buildkite-plugin",
+			true,
 		},
-		{
-			"PAT_absent",
-			gitDetails{"", "equinixmetal-buildkite", "trivy-buildkite-plugin"},
-			true,
-			"error while fetching latest tag",
-			true,
+		// because this is open-source, here we actually use same public repo to with test github pat provided via GITHUB_PAT env var
+		"PrivateRepo": {
+			"equinixmetal-buildkite",
+			"trivy-buildkite-plugin",
+			false,
 		},
 	}
 
-	for _, tc := range cases {
-		t.Run(
-			tc.name,
-			func(t *testing.T) {
-				tag, err := GetLatestTag(tc.input.PAT, tc.input.Org, tc.input.Repo)
+	for n, r := range repos {
+		t.Run(n, func(t *testing.T) {
+			cases := []struct {
+				name    string
+				pat     string
+				wantErr error
+			}{
+				{
+					"ValidPAT",
+					os.Getenv("GITHUB_PAT"),
+					nil,
+				},
+				{
+					"InvalidPAT",
+					"this is not a valid gihub pat",
+					ErrFetchingLatestTag,
+				},
+				{
+					"NoPAT",
+					"",
+					func() error {
+						if r.public {
+							return nil
+						}
+						return ErrFetchingLatestTag
+					}(),
+				},
+			}
 
-				if tc.hasError {
-					if !strings.Contains(err.Error(), tc.errMsg) {
-						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
-					}
-				} else {
+			for _, tc := range cases {
+				t.Run(tc.name, func(t *testing.T) {
+					tag, err := GetLatestTag(tc.pat, r.owner, r.name)
 					if err != nil {
-						t.Fatalf("Error %s is not nil", err.Error())
+						if tc.wantErr == nil {
+							t.Fatalf("unexpected error: %v", err)
+						}
+						if !errors.Is(err, ErrFetchingLatestTag) {
+							t.Fatalf("want: %v, got: %v", tc.wantErr, err)
+						}
+						return
 					}
-				}
-
-				if tc.isEmpty {
-					if strings.TrimSpace(tag) != "" {
-						t.Fatalf("Tag expected to be blank but has value: %s", tag)
+					if tag == "" {
+						t.Fatalf("unexpected empty tag: %v", err)
 					}
-				} else {
-					if strings.TrimSpace(tag) == "" {
-						t.Fatal("Tag expected to have value but is blank")
-					}
-				}
-			},
-		)
+				},
+				)
+			}
+		})
 	}
 }
