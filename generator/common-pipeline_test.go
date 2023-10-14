@@ -38,7 +38,7 @@ steps:
 `
 	cases := []testCase{
 		{"success", tpc, "../templates/plugins-step.tmpl", false, "", expected},
-		{"wrong_template_path", tpc, "../templates/xyz.tmpl", true, "cannot find the file specified", ""},
+		{"wrong_template_path", tpc, "../templates/xyz.tmpl", true, "no such file or directory", ""},
 	}
 
 	g := Generator{
