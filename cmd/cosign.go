@@ -26,7 +26,7 @@ func LoadCosignConfigs() {
 
 	err := s.Unmarshal(&cosignPluginConfig) // unmarshal to the cosignPluginConfig object
 	if err != nil {
-		log.Error("Error unmarshalling config file", err)
+		log.Error("Error unmarshalling cosign plugin from config file", err)
 		return
 	}
 
