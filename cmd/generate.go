@@ -24,7 +24,6 @@ func init() {
 	generateCmd.Flags().StringToString("overrides", nil, `pass the overrides in the maps syntax as --overrides plugins.trivy.skip-files="x.txt,y.txt" --overrides plugins.cosign.keyless=false`)
 
 	generateCmd.PersistentFlags().StringVar(&ConfigFilePath, "config", "", fmt.Sprintf("config file path (default %q)", defaultConfigFilePath))
-	// log.Println("cosign enabled:", *cosignEnabled)
 }
 
 var generateCmd = &cobra.Command{
@@ -42,7 +41,10 @@ This Program generates step for the provided plugins with configurations
 		// load cosign plugin config
 		LoadCosignConfigs()
 		// generate the build template
-		generator.GenerateBuildSteps(g, os.Stdout, util.TEMPLATE_FILE_PATH)
+		err := generator.GenerateBuildSteps(g, os.Stdout, util.TemplateFilePath)
+		if err != nil {
+			log.Fatalf("Failed to generate build steps. %s", err.Error())
+		}
 	},
 }
 
@@ -77,5 +79,8 @@ func ParseOverrides(g generator.Generator, cmd *cobra.Command) {
 		vNew.Set(k, v)
 	}
 
-	viper.MergeConfigMap(vNew.AllSettings()) // merge to global viper object
+	err = viper.MergeConfigMap(vNew.AllSettings()) // merge to global viper object
+	if err != nil {
+		log.Fatalf("Failed merging the configuration with command line overrides. %s", err.Error())
+	}
 }
