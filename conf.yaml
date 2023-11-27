@@ -19,5 +19,13 @@ plugins:
     keyed-config:
       key: "sample-key"
     cosign-version: "v0.1.0"
+  docker-metadata:
+    images: ["my-org/my-image","image2"]
+    extra_tags: ["latest","tag2"]
+    title: "sample"
+    licenses: ""
+    vendor: "abc"
+    debug: true
+    docker-metadata-version: ""
 
 # --overrides plugins.trivy.skip-files="x.txt,y.txt" --overrides plugins.cosign.keyless=false

@@ -52,3 +52,24 @@ steps:
           helm-overrides-file: "{{ .TPConfig.HelmOverridesFile }}"
           {{- end }}
 {{- end}}
+{{- if .DockerMetadataPluginEnabled }}
+      - equinixmetal-buildkite/docker-metadata#{{ .DockerMetadataConfig.Version }}:
+          {{- if .DockerMetadataConfig.Images }}
+          images: "{{ .DockerMetadataConfig.Images }}"
+          {{- end}}
+          {{- if .DockerMetadataConfig.ExtraTags }}
+          extra_tags: "{{ .DockerMetadataConfig.ExtraTags }}"
+          {{- end}}
+          {{- if .DockerMetadataConfig.Title }}
+          title: "{{ .DockerMetadataConfig.Title }}"
+          {{- end}}
+          {{- if .DockerMetadataConfig.Licenses }}
+          licenses: "{{ .DockerMetadataConfig.Licenses }}"
+          {{- end}}
+          {{- if .DockerMetadataConfig.Vendor }}
+          vendor: "{{ .DockerMetadataConfig.Vendor }}"
+          {{- end}}
+          {{- if .DockerMetadataConfig.Debug }}
+          debug: "{{ .DockerMetadataConfig.Debug }}"
+          {{- end}}
+{{- end}}

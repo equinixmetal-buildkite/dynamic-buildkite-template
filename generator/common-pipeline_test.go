@@ -67,3 +67,63 @@ steps:
 		)
 	}
 }
+
+type dockerTestCase struct {
+	name         string
+	dmpc         DockerMetadataPluginConfig
+	templatePath string
+	hasError     bool
+	errMsg       string
+	expVal       string
+}
+
+func TestGenerateDockerMetadataStep(t *testing.T) {
+	images := []string{"test_image"}
+	title := "test_title"
+	vendor := "test_vendor"
+
+	dmpc := DockerMetadataPluginConfig{
+		Images: images,
+		Title:  title,
+		Vendor: vendor,
+	}
+	expected := `
+steps:
+  - command: ls
+    plugins:
+      - equinixmetal-buildkite/docker-metadata#:
+          images: "[test_image]"
+          title: "test_title"
+          vendor: "test_vendor"
+`
+	cases := []dockerTestCase{
+		{"success", dmpc, "../templates/plugins-step.tmpl", false, "", expected},
+		{"wrong_template_path", dmpc, "../templates/xyz.tmpl", true, "no such file or directory", ""},
+	}
+
+	g := Generator{
+		DockerMetadataPluginEnabled: true,
+		DockerMetadataConfig:        dmpc,
+	}
+
+	for _, tc := range cases {
+		t.Run(
+			tc.name,
+			func(t *testing.T) {
+				var sb strings.Builder
+				err := GenerateBuildSteps(g, &sb, tc.templatePath)
+				if tc.hasError {
+					if !strings.Contains(err.Error(), tc.errMsg) {
+						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
+					}
+				} else {
+					if strings.TrimSpace(tc.expVal) != strings.TrimSpace(sb.String()) {
+						t.Fatalf("Not equal: \n"+
+							"expected: %s\n"+
+							"actual  : %s\n", strings.TrimSpace(tc.expVal), strings.TrimSpace(sb.String()))
+					}
+				}
+			},
+		)
+	}
+}

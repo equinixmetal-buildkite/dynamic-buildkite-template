@@ -40,6 +40,8 @@ This Program generates step for the provided plugins with configurations
 		LoadTrivyConfigs()
 		// load cosign plugin config
 		LoadCosignConfigs()
+		// load docker-metadata plugin config
+		LoadDockerMetaDataConfigs()
 		// generate the build template
 		err := generator.GenerateBuildSteps(g, os.Stdout, util.TemplateFilePath)
 		if err != nil {
