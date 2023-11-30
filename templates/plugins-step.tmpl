@@ -55,10 +55,16 @@ steps:
 {{- if .DockerMetadataPluginEnabled }}
       - equinixmetal-buildkite/docker-metadata#{{ .DockerMetadataConfig.Version }}:
           {{- if .DockerMetadataConfig.Images }}
-          images: "{{ .DockerMetadataConfig.Images }}"
+          images:
+          {{- range .DockerMetadataConfig.Images }}
+          - "{{ . }}"
+          {{- end }}
           {{- end}}
           {{- if .DockerMetadataConfig.ExtraTags }}
-          extra_tags: "{{ .DockerMetadataConfig.ExtraTags }}"
+          extra_tags:
+          {{- range .DockerMetadataConfig.ExtraTags }}
+          - "{{ . }}"
+          {{- end}}
           {{- end}}
           {{- if .DockerMetadataConfig.Title }}
           title: "{{ .DockerMetadataConfig.Title }}"
