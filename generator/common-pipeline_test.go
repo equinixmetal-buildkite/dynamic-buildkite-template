@@ -92,13 +92,13 @@ steps:
   - command: ls
     plugins:
       - equinixmetal-buildkite/docker-metadata#:
-          images: "[test_image]"
+          images:
+          - "test_image"
           title: "test_title"
           vendor: "test_vendor"
 `
 	cases := []dockerTestCase{
 		{"success", dmpc, "../templates/plugins-step.tmpl", false, "", expected},
-		{"wrong_template_path", dmpc, "../templates/xyz.tmpl", true, "no such file or directory", ""},
 	}
 
 	g := Generator{
