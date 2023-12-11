@@ -12,7 +12,7 @@ plugins:
     helm-overrides-files: ""
   cosign:
     image: "ghcr.io/my-project/my-image:latest"
-    keyless: true
+    keyless: false
     keyless-config:
       fulcio_url: "https://fulcio.sigstore.dev"
       rekor_url: "https://rekor.sigstore.dev"
