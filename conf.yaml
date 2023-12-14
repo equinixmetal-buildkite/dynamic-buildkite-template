@@ -27,5 +27,10 @@ plugins:
     vendor: "abc"
     debug: true
     docker-metadata-version: ""
+  ssm-buildkite-plugin:
+    parameters:
+      COSIGN_KEY_SECRET: "test-secret"
+      COSIGN_PASSWORD: "passwd"
+      GITHUB_TOKEN: "token"
 
 # --overrides plugins.trivy.skip-files="x.txt,y.txt" --overrides plugins.cosign.keyless=false

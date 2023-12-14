@@ -6,7 +6,9 @@ type Generator struct {
 	TrivyPluginEnabled          bool
 	CosignPluginEnabled         bool
 	DockerMetadataPluginEnabled bool
+	SSMPluginEnabled            bool
 	TPConfig                    TrivyPluginConfig
 	CosignConfig                CosignPluginConfig
 	DockerMetadataConfig        DockerMetadataPluginConfig
+	SSMConfig                   SSMPluginConfig
 }

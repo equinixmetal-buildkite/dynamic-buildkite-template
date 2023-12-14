@@ -42,6 +42,8 @@ This Program generates step for the provided plugins with configurations
 		LoadCosignConfigs()
 		// load docker-metadata plugin config
 		LoadDockerMetaDataConfigs()
+		// load SSM plugin
+		LoadSSMDataConfigs()
 		// generate the build template
 		err := generator.GenerateBuildSteps(g, os.Stdout, util.TemplateFilePath)
 		if err != nil {

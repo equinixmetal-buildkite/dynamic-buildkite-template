@@ -127,3 +127,125 @@ steps:
 		)
 	}
 }
+
+type ssmTestCase struct {
+	name         string
+	ssm          SSMPluginConfig
+	templatePath string
+	hasError     bool
+	errMsg       string
+	expVal       string
+}
+
+func TestSSMStep(t *testing.T) {
+
+	CosignKeySecret := "test-secret"
+	CosignPasswd := "passwd"
+
+	ssm := SSMPluginConfig{
+		Parameter: Parameter{CosignKeySecret: CosignKeySecret, CosignPassword: CosignPasswd},
+	}
+	expected := `
+steps:
+  - command: ls
+    plugins:
+      - ssh://git@git@github.com/equinixmetal/ssm-buildkite-plugin#:
+          parameters:
+            COSIGN_KEY_SECRET : test-secret
+            COSIGN_PASSWORD : passwd
+`
+	cases := []ssmTestCase{
+		{"success", ssm, "../templates/plugins-step.tmpl", false, "", expected},
+	}
+
+	g := Generator{
+		SSMPluginEnabled: true,
+		SSMConfig:        ssm,
+	}
+
+	for _, tc := range cases {
+		t.Run(
+			tc.name,
+			func(t *testing.T) {
+				var sb strings.Builder
+				err := GenerateBuildSteps(g, &sb, tc.templatePath)
+				if tc.hasError {
+					if !strings.Contains(err.Error(), tc.errMsg) {
+						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
+					}
+				} else {
+					if strings.TrimSpace(tc.expVal) != strings.TrimSpace(sb.String()) {
+						t.Fatalf("Not equal: \n"+
+							"expected: %s\n"+
+							"actual  : %s\n", strings.TrimSpace(tc.expVal), strings.TrimSpace(sb.String()))
+					}
+				}
+			},
+		)
+	}
+}
+
+type cosignTestCase struct {
+	name         string
+	cosignConf   CosignPluginConfig
+	templatePath string
+	hasError     bool
+	errMsg       string
+	expVal       string
+}
+
+func TestCosignStep(t *testing.T) {
+
+	image := "ghcr.io/my-project/my-image:latest"
+	keyless := false
+	key := "sample-key"
+
+	cosignConfig := CosignPluginConfig{
+		Image:       image,
+		Keyless:     keyless,
+		KeyedConfig: KeyedConfig{Key: key},
+	}
+	expected := `
+steps:
+  - label: ":docker: get cosign key"
+    key: "getkey"
+    command: |
+      #!/bin/bash
+      echo "\$COSIGN_KEY_SECRET" > ${COSIGN_KEY_PATH}
+    plugins:
+      - equinixmetal-buildkite/cosign#:
+          image: ghcr.io/my-project/my-image:latest
+          keyless : false
+          keyed-config:
+            key: sample-key
+`
+	cases := []cosignTestCase{
+		{"success", cosignConfig, "../templates/plugins-step.tmpl", false, "", expected},
+	}
+
+	g := Generator{
+		CosignPluginEnabled: true,
+		CosignConfig:        cosignConfig,
+	}
+
+	for _, tc := range cases {
+		t.Run(
+			tc.name,
+			func(t *testing.T) {
+				var sb strings.Builder
+				err := GenerateBuildSteps(g, &sb, tc.templatePath)
+				if tc.hasError {
+					if !strings.Contains(err.Error(), tc.errMsg) {
+						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
+					}
+				} else {
+					if strings.TrimSpace(tc.expVal) != strings.TrimSpace(sb.String()) {
+						t.Fatalf("Not equal: \n"+
+							"expected: %s\n"+
+							"actual  : %s\n", strings.TrimSpace(tc.expVal), strings.TrimSpace(sb.String()))
+					}
+				}
+			},
+		)
+	}
+}
