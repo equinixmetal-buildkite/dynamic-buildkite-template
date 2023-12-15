@@ -149,7 +149,7 @@ func TestSSMStep(t *testing.T) {
 steps:
   - command: ls
     plugins:
-      - ssh://git@git@github.com/equinixmetal/ssm-buildkite-plugin#:
+      - ssh://git@github.com/equinixmetal/ssm-buildkite-plugin#:
           parameters:
             COSIGN_KEY_SECRET : test-secret
             COSIGN_PASSWORD : passwd

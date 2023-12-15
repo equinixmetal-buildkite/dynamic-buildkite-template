@@ -11,7 +11,7 @@ steps:
     plugins:
 {{- end }}
 {{- if .SSMPluginEnabled }}
-      - ssh://git@git@github.com/equinixmetal/ssm-buildkite-plugin#{{ .CosignConfig.CosignVersion }}:
+      - ssh://git@github.com/equinixmetal/ssm-buildkite-plugin#{{ .CosignConfig.CosignVersion }}:
           parameters:
             COSIGN_KEY_SECRET : {{ .SSMConfig.Parameter.CosignKeySecret}}
             COSIGN_PASSWORD : {{ .SSMConfig.Parameter.CosignPassword }}
