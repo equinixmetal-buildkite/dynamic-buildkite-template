@@ -31,8 +31,8 @@ func LoadSSMDataConfigs() {
 	}
 
 	// fetch latest ssm-buildkite plugin version, if not defined in the config
-	if strings.TrimSpace(dockermetadaPluginConfig.Version) == "" {
-		dockermetadaPluginConfig.Version = GetLatestPluginTag("ssm-buildkite-plugin")
+	if strings.TrimSpace(ssmPluginConfig.Version) == "" {
+		ssmPluginConfig.Version = GetLatestPluginTag("ssm-buildkite-plugin")
 	}
 	g.SSMConfig = ssmPluginConfig
 	// mark ssm-buildkite plugin as enabled

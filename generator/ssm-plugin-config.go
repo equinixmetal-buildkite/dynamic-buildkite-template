@@ -2,6 +2,7 @@ package generator
 
 type SSMPluginConfig struct {
 	Parameter Parameter `mapstructure:"parameters"`
+	Version   string    `mapstructure:"ssm-buildkite-version"`
 }
 
 type Parameter struct {

@@ -28,6 +28,7 @@ plugins:
     debug: true
     docker-metadata-version: ""
   ssm-buildkite-plugin:
+    ssm-buildkite-version: "v1.0.4"
     parameters:
       COSIGN_KEY_SECRET: "test-secret"
       COSIGN_PASSWORD: "passwd"

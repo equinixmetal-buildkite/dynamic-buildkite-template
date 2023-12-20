@@ -1,23 +1,27 @@
 steps:
 {{- if .CosignPluginEnabled }}
+{{- if not .CosignConfig.Keyless }}
   - label: ":docker: get cosign key"
     key: "getkey"
     command: |
       #!/bin/bash
       echo "\$COSIGN_KEY_SECRET" > ${COSIGN_KEY_PATH}
     plugins:
+{{- end }}   
 {{- else }}
   - command: ls
     plugins:
 {{- end }}
-{{- if .SSMPluginEnabled }}
-      - ssh://git@github.com/equinixmetal/ssm-buildkite-plugin#{{ .CosignConfig.CosignVersion }}:
+{{- if .CosignPluginEnabled }}
+{{- if not .CosignConfig.Keyless }}
+      - ssh://git@github.com/equinixmetal/ssm-buildkite-plugin#{{ .SSMConfig.Version }}:
           parameters:
             COSIGN_KEY_SECRET : {{ .SSMConfig.Parameter.CosignKeySecret}}
             COSIGN_PASSWORD : {{ .SSMConfig.Parameter.CosignPassword }}
           {{- if .SSMConfig.Parameter.GithubToken}}
             GITHUB_TOKEN : {{ .SSMConfig.Parameter.GithubToken }}
           {{- end }}
+{{- end }}
 {{- end}}
 {{- if .CosignPluginEnabled }}
       - equinixmetal-buildkite/cosign#{{ .CosignConfig.CosignVersion }}:
