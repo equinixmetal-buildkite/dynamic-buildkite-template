@@ -10,3 +10,15 @@ plugins:
     image-ref: ""
     version: ""
     helm-overrides-file: ""
+  docker-build:
+    dockerfile: "Dockerfile"
+    context: "."
+    secret-file: "id=mysecret,src=secret-file"
+    tags: 
+      - "my-org/my-image:latest"
+    labels: 
+      - "org.opencontainers.image.source=$BUILDKITE_REPO"
+    build-args: 
+      - "FOO=bar"
+      - "BAZ=qux"
+  push: false 
