@@ -9,6 +9,11 @@ plugins:
     severity: HIGH,CRITICAL
     ignore-unfixed: true
     security-checks: vuln,config
+    skip-files: ""
+    skip-dirs: ""
+    image-ref: ""
+    version: ""
+    helm-overrides-files: ""
   cosign:
     image: "ghcr.io/my-project/my-image:latest"
     keyless: false
