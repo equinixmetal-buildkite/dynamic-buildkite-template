@@ -1,49 +1,28 @@
 plugins:
+  docker-build:
+    build-args: 
+      - NAME=REPO_NAME
+    push: true
   trivy:
     exit-code: 0
     timeout: 5m0s
     severity: HIGH,CRITICAL
     ignore-unfixed: true
     security-checks: vuln,config
-    skip-files: ""
-    skip-dirs: ""
-    image-ref: ""
-    version: ""
-    helm-overrides-files: ""
   cosign:
     image: "ghcr.io/my-project/my-image:latest"
     keyless: false
-    keyless-config:
-      fulcio_url: "https://fulcio.sigstore.dev"
-      rekor_url: "https://rekor.sigstore.dev"
     keyed-config:
-      key: "sample-key"
-    cosign-version: "v0.1.0"
+      key: cosign.key
+    cosign-version: "main"
   docker-metadata:
     images: ["my-org/my-image","image2"]
     extra_tags: ["latest","tag2"]
-    title: "sample"
-    licenses: ""
-    vendor: "abc"
-    debug: true
-    docker-metadata-version: ""
   ssm-buildkite-plugin:
     ssm-buildkite-version: "v1.0.4"
     parameters:
       COSIGN_KEY_SECRET: "test-secret"
       COSIGN_PASSWORD: "passwd"
-      GITHUB_TOKEN: "token"
-  docker-build:
-    dockerfile: "Dockerfile"
-    context: "."
-    secret-file: "id=mysecret,src=secret-file"
-    tags: 
-      - "my-org/my-image:latest"
-    labels: 
-      - "org.opencontainers.image.source=$BUILDKITE_REPO"
-    build-args: 
-      - "FOO=bar"
-      - "BAZ=qux"
-    push: false
+
 
 # --overrides plugins.trivy.skip-files="x.txt,y.txt" --overrides plugins.cosign.keyless=false
