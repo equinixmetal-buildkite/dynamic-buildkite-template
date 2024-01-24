@@ -204,3 +204,59 @@ steps:
 		)
 	}
 }
+
+type dockerBuildTestCase struct {
+	name         string
+	dmpc         DockerBuildConfig
+	templatePath string
+	hasError     bool
+	errMsg       string
+	expVal       string
+}
+
+func TestGenerateDockerBuildStep(t *testing.T) {
+	dockerfile := "Dockerfile"
+	secretFile := "id=mysecret,src=secret-file"
+
+	dbc := DockerBuildConfig{
+		Dockerfile: dockerfile,
+		SecretFile: secretFile,
+	}
+	expected := `
+steps:
+  - command: ls
+    plugins:
+      - equinixmetal-buildkite/docker-build#:
+          dockerfile: Dockerfile
+          secret-file: id=mysecret,src=secret-file
+`
+	cases := []dockerBuildTestCase{
+		{"success", dbc, "../templates/plugins-step.tmpl", false, "", expected},
+	}
+
+	g := Generator{
+		DockerBuildPluginEnabled: true,
+		DockerBuildConfig:        dbc,
+	}
+
+	for _, tc := range cases {
+		t.Run(
+			tc.name,
+			func(t *testing.T) {
+				var sb strings.Builder
+				err := GenerateBuildSteps(g, &sb, tc.templatePath)
+				if tc.hasError {
+					if !strings.Contains(err.Error(), tc.errMsg) {
+						t.Fatalf("Error %s does not contain %s\n", err.Error(), tc.errMsg)
+					}
+				} else {
+					if strings.TrimSpace(tc.expVal) != strings.TrimSpace(sb.String()) {
+						t.Fatalf("Not equal: \n"+
+							"expected: %s\n"+
+							"actual  : %s\n", strings.TrimSpace(tc.expVal), strings.TrimSpace(sb.String()))
+					}
+				}
+			},
+		)
+	}
+}

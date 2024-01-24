@@ -33,5 +33,17 @@ plugins:
       COSIGN_KEY_SECRET: "test-secret"
       COSIGN_PASSWORD: "passwd"
       GITHUB_TOKEN: "token"
+  docker-build:
+    dockerfile: "Dockerfile"
+    context: "."
+    secret-file: "id=mysecret,src=secret-file"
+    tags: 
+      - "my-org/my-image:latest"
+    labels: 
+      - "org.opencontainers.image.source=$BUILDKITE_REPO"
+    build-args: 
+      - "FOO=bar"
+      - "BAZ=qux"
+    push: false
 
 # --overrides plugins.trivy.skip-files="x.txt,y.txt" --overrides plugins.cosign.keyless=false

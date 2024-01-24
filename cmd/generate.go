@@ -42,6 +42,8 @@ This Program generates step for the provided plugins with configurations
 		LoadCosignConfigs()
 		// load docker-metadata plugin config
 		LoadDockerMetaDataConfigs()
+		// load docker build plugin config
+		LoadDockerBuildConfigs()
 		// load SSM plugin
 		LoadSSMDataConfigs()
 		// generate the build template

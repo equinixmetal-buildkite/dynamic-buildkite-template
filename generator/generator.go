@@ -7,8 +7,10 @@ type Generator struct {
 	CosignPluginEnabled         bool
 	DockerMetadataPluginEnabled bool
 	SSMPluginEnabled            bool
+	DockerBuildPluginEnabled    bool
 	TPConfig                    TrivyPluginConfig
 	CosignConfig                CosignPluginConfig
 	DockerMetadataConfig        DockerMetadataPluginConfig
 	SSMConfig                   SSMPluginConfig
+	DockerBuildConfig           DockerBuildConfig
 }
