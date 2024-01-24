@@ -1,7 +1,7 @@
 plugins:
   docker-build:
     build-args: 
-      - NAME=REPO_NAME
+      - "NAME=REPO_NAME"
     push: true
   trivy:
     exit-code: 0
