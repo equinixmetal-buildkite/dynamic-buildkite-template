@@ -5,46 +5,13 @@ steps:
     key: "getkey"
     command: |
       #!/bin/bash
-      echo "\$COSIGN_KEY_SECRET" > cosign.key
+      echo "\$COSIGN_KEY_SECRET" > ${COSIGN_KEY_PATH}
     plugins:
 {{- end }}   
 {{- else }}
   - command: ls
     plugins:
 {{- end }}
-{{- if .DockerBuildPluginEnabled }}
-      - equinixmetal-buildkite/docker-build#{{ .DockerBuildConfig.Version }}:
-          {{- if .DockerBuildConfig.Dockerfile}}
-          dockerfile: {{ .DockerBuildConfig.Dockerfile }}
-          {{- end }}
-          {{- if .DockerBuildConfig.Context}}
-          context : {{ .DockerBuildConfig.Context }}
-          {{- end }}
-          {{- if .DockerBuildConfig.SecretFile}}
-          secret-file: {{ .DockerBuildConfig.SecretFile }}
-          {{- end }}
-          {{- if .DockerBuildConfig.Tags}}
-          tags: 
-          {{- range .DockerBuildConfig.Tags }}
-            - {{ . }}
-          {{- end }}
-          {{- end }}
-          {{- if .DockerBuildConfig.Labels}}
-          labels:
-          {{- range .DockerBuildConfig.Labels }}
-            - {{ . }}
-          {{- end }}
-          {{- end }}
-          {{- if .DockerBuildConfig.BuildArgs}}
-          build-args:
-          {{- range .DockerBuildConfig.BuildArgs }}
-            - {{ . }}
-          {{- end }}
-          {{- end }}
-          {{- if .DockerBuildConfig.Push}}
-          push: {{ .DockerBuildConfig.Push }}
-          {{- end }}
-{{- end}}
 {{- if .CosignPluginEnabled }}
 {{- if not .CosignConfig.Keyless }}
       - ssh://git@github.com/equinixmetal/ssm-buildkite-plugin#{{ .SSMConfig.Version }}:
@@ -133,4 +100,37 @@ steps:
           {{- if .DockerMetadataConfig.Debug }}
           debug: "{{ .DockerMetadataConfig.Debug }}"
           {{- end}}
+{{- end}}
+{{- if .DockerBuildPluginEnabled }}
+      - equinixmetal-buildkite/docker-build#{{ .DockerBuildConfig.Version }}:
+          {{- if .DockerBuildConfig.Dockerfile}}
+          dockerfile: {{ .DockerBuildConfig.Dockerfile }}
+          {{- end }}
+          {{- if .DockerBuildConfig.Context}}
+          context : {{ .DockerBuildConfig.Context }}
+          {{- end }}
+          {{- if .DockerBuildConfig.SecretFile}}
+          secret-file: {{ .DockerBuildConfig.SecretFile }}
+          {{- end }}
+          {{- if .DockerBuildConfig.Tags}}
+          tags: 
+          {{- range .DockerBuildConfig.Tags }}
+            - {{ . }}
+          {{- end }}
+          {{- end }}
+          {{- if .DockerBuildConfig.Labels}}
+          labels:
+          {{- range .DockerBuildConfig.Labels }}
+            - {{ . }}
+          {{- end }}
+          {{- end }}
+          {{- if .DockerBuildConfig.BuildArgs}}
+          build-args:
+          {{- range .DockerBuildConfig.BuildArgs }}
+            - {{ . }}
+          {{- end }}
+          {{- end }}
+          {{- if .DockerBuildConfig.Push}}
+          push: {{ .DockerBuildConfig.Push }}
+          {{- end }}
 {{- end}}
