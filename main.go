@@ -15,7 +15,7 @@ func init() {
 	// Can be any io.Writer, see below for File example
 	log.SetOutput(os.Stderr)
 
-	// Only log the error severity or above.
+	// Only log the error severity or above. Chnage to log.DebugLevel for debugging
 	log.SetLevel(log.ErrorLevel)
 }
 func main() {
