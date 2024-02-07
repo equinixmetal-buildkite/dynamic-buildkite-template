@@ -46,6 +46,7 @@ This Program generates step for the provided plugins with configurations
 		LoadDockerBuildConfigs()
 		// load SSM plugin
 		LoadSSMDataConfigs()
+		LoadCommandConfigs(cmd)
 		// generate the build template
 		err := generator.GenerateBuildSteps(g, os.Stdout, util.TemplateFilePath)
 		if err != nil {
