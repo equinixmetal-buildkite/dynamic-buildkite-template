@@ -156,11 +156,7 @@ func TestCosignStep(t *testing.T) {
 	}
 	expected := `
 steps:
-  - label: ":docker: get cosign key"
-    key: "getkey"
-    command: |
-      #!/bin/bash
-      echo "\$COSIGN_KEY_SECRET" > ${COSIGN_KEY_PATH}
+  - command: ls
     plugins:
       - ssh://git@github.com/equinixmetal/ssm-buildkite-plugin#:
           parameters:
