@@ -58,7 +58,7 @@ steps:
           image: {{ .CosignConfig.Image }}
           {{- end }}
           {{- if not .CosignConfig.Keyless}}
-          keyless : {{ .CosignConfig.Keyless }}
+          keyless: {{ .CosignConfig.Keyless }}
           {{- end }}
           {{- if .CosignConfig.Keyless}}
           keyless-config:
@@ -79,7 +79,7 @@ steps:
           exit-code: {{ .TPConfig.ExitCode }}
           {{- end }}
           {{- if .TPConfig.Timeout}}
-          timeout : "{{ .TPConfig.Timeout }}"
+          timeout: "{{ .TPConfig.Timeout }}"
           {{- end }}
           {{- if .TPConfig.Severity}}
           severity: "{{ .TPConfig.Severity }}"
