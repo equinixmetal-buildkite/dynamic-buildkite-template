@@ -14,7 +14,7 @@ steps:
           dockerfile: {{ .DockerBuildConfig.Dockerfile }}
           {{- end }}
           {{- if .DockerBuildConfig.Context}}
-          context : {{ .DockerBuildConfig.Context }}
+          context: {{ .DockerBuildConfig.Context }}
           {{- end }}
           {{- if .DockerBuildConfig.SecretFile}}
           secret-file: {{ .DockerBuildConfig.SecretFile }}
@@ -45,10 +45,10 @@ steps:
 {{- if not .CosignConfig.Keyless }}
       - ssh://git@github.com/equinixmetal/ssm-buildkite-plugin#{{ .SSMConfig.Version }}:
           parameters:
-            COSIGN_KEY_SECRET : {{ .SSMConfig.Parameter.CosignKeySecret}}
-            COSIGN_PASSWORD : {{ .SSMConfig.Parameter.CosignPassword }}
+            COSIGN_KEY_SECRET: {{ .SSMConfig.Parameter.CosignKeySecret}}
+            COSIGN_PASSWORD: {{ .SSMConfig.Parameter.CosignPassword }}
           {{- if .SSMConfig.Parameter.GithubToken}}
-            GITHUB_TOKEN : {{ .SSMConfig.Parameter.GithubToken }}
+            GITHUB_TOKEN: {{ .SSMConfig.Parameter.GithubToken }}
           {{- end }}
 {{- end }}
 {{- end}}
@@ -58,7 +58,7 @@ steps:
           image: {{ .CosignConfig.Image }}
           {{- end }}
           {{- if not .CosignConfig.Keyless}}
-          keyless : {{ .CosignConfig.Keyless }}
+          keyless: {{ .CosignConfig.Keyless }}
           {{- end }}
           {{- if .CosignConfig.Keyless}}
           keyless-config:
@@ -79,7 +79,7 @@ steps:
           exit-code: {{ .TPConfig.ExitCode }}
           {{- end }}
           {{- if .TPConfig.Timeout}}
-          timeout : "{{ .TPConfig.Timeout }}"
+          timeout: "{{ .TPConfig.Timeout }}"
           {{- end }}
           {{- if .TPConfig.Severity}}
           severity: "{{ .TPConfig.Severity }}"
